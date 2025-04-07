@@ -38,7 +38,11 @@ This project was created to:
 - Demonstrate clean code organization, modular structure, and UI/UX design
 - Present a working prototype to potential clients and recruiters
 
-/////////////////////////////////////////////////////////////////////////////////////////////////\
+
+
+----------------------------------------------------------------------------------------------------
+
+
 
 # Task Manager App (포트폴리오용 데모 프로젝트)
 
