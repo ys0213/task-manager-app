@@ -1,33 +1,33 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
-import taskRoutes from "./routes/taskRoutes.js";
+import dotenv from "dotenv";
+import projectRoutes from "./routes/projectRoutes.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 미들웨어
+// Middleware
 app.use(cors());
-app.use(express.json()); // JSON 파싱
+app.use(express.json());
+app.use("/api/projects", projectRoutes);
 
-// 라우터
-app.use("/api/tasks", taskRoutes);
+// Test route
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 // MongoDB 연결
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB 연결 성공");
+    console.log("MongoDB connected");
     app.listen(PORT, () => {
-      console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("❌ MongoDB 연결 실패:", err);
+    console.error("MongoDB connection error:", err);
   });
