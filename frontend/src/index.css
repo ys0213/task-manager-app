@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -36,6 +34,13 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+h2, h3 {
+  color: rgba(117, 117, 117, 0.87);
+}
+
+label{
+  color: rgba(117, 117, 117, 0.87);
+}
 
 button {
   border-radius: 8px;
@@ -54,6 +59,13 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+input{
+  background-color: rgba(117, 117, 117, 0.87);
+}
+textarea{
+  background-color: rgba(117, 117, 117, 0.87);
 }
 
 @media (prefers-color-scheme: light) {
