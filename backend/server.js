@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import projectRoutes from "./routes/projectRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -12,14 +13,17 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+//Routes
 app.use("/api/projects", projectRoutes);
+app.use("/api/user", userRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// MongoDB 연결
+// MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
