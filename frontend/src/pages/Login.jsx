@@ -1,11 +1,44 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) {
+      navigate("/dashboard");  // 이미 로그인한 경우 대시보드로 이동
+    }
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const user = await response.json();
+
+      // Save user info to localStorage
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userName", user.name);
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+    }
   };
 
   return (
@@ -19,6 +52,8 @@ export default function Login() {
           <label className="block mb-1 font-medium">Email</label>
           <input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border rounded-lg"
             required
           />
@@ -27,6 +62,8 @@ export default function Login() {
           <label className="block mb-1 font-medium">Password</label>
           <input
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border rounded-lg"
             required
           />
@@ -35,8 +72,16 @@ export default function Login() {
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
         >
-          로그인
+          Login
         </button>
+
+        {/* Link to signup */}
+        <p className="mt-4 text-center">
+          Don't have an account?{" "}
+          <a href="/signup" className="text-blue-600 hover:underline">
+            Sign up
+          </a>
+        </p>
       </form>
     </div>
   );

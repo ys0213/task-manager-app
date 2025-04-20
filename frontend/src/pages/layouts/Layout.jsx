@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Menu } from "lucide-react";
 
@@ -21,6 +21,14 @@ const NavLinks = ({ onClick }) => {
 
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const LoginUser = localStorage.getItem("user");
+    if (LoginUser) {
+      setUser(LoginUser);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -47,7 +55,7 @@ const Layout = () => {
           <Link to="/base" className="hover:underline">
             Task Manager
           </Link>
-        </h1>
+        </h1><h3>{user}</h3>
       </header>
 
       <div className="flex">
