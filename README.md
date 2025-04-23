@@ -56,7 +56,7 @@ This project was created to:
 - React Router
 - Tailwind CSS
 - ShadCN/UI
-- Zustand (상태 관리) 이게 모예요 처음 봐요 저도 몰라요
+- Zustand (상태 관리)
 
 ### 백엔드
 
