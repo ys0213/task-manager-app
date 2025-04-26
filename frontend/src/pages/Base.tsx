@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
 
 const Base = () => {
-  // Define the user state type as string | null since user can be either string or null
   const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const loginUser = localStorage.getItem("name");
-    if (loginUser) {
-      setUser(loginUser);
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.name) {
+          setUser(parsed.name);
+        }
+      } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
+      }
     }
   }, []);
 
-  if (!user) return <p>Please log in to view the pill details.</p>;
+  if (!user) {
+    return <p>Please log in to view the pill details.</p>;
+  }
 
   return (
     <div>
