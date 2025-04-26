@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Menu } from "lucide-react";
 
+// Define types for props
+interface NavLinksProps {
+  onClick: () => void;
+}
+
 // Reusable navigation links component
-const NavLinks = ({ onClick }) => {
+const NavLinks = ({ onClick }: NavLinksProps) => {
   return (
     <>
       <Link to="/login" onClick={onClick} className="block hover:underline">
@@ -12,21 +17,22 @@ const NavLinks = ({ onClick }) => {
       <Link to="/dashboard" onClick={onClick} className="block hover:underline">
         Dashboard
       </Link>
-      <Link to="/projects" onClick={onClick} className="block hover:underline">
-        Projects
+      <Link to="/pills" onClick={onClick} className="block hover:underline">
+        Pills
       </Link>
     </>
   );
 };
 
 const Layout = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  // Define types for useState
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    const LoginUser = localStorage.getItem("user");
-    if (LoginUser) {
-      setUser(LoginUser);
+    const loginUser = localStorage.getItem("user");
+    if (loginUser) {
+      setUser(loginUser);
     }
   }, []);
 
@@ -55,13 +61,14 @@ const Layout = () => {
           <Link to="/base" className="hover:underline">
             Task Manager
           </Link>
-        </h1><h3>{user}</h3>
+        </h1>
+        {user && <h3>{user}</h3>}
       </header>
 
       <div className="flex">
         {/* Sidebar for desktop */}
         <aside className="hidden md:block w-64 bg-gray-800 p-4 space-y-4">
-          <NavLinks />
+          <NavLinks onClick={() => setMenuOpen(false)} />
         </aside>
 
         {/* Main content area */}

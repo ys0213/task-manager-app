@@ -2,18 +2,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../api/userApi";
 
+// 사용자 데이터의 타입 정의
+interface UserData {
+  email: string;
+  name: string;
+  password: string;
+}
+
 export default function SignUp() {
-  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [userData, setUserData] = useState<UserData>({ email: "", name: "", password: "" });
   const navigate = useNavigate();
 
   // Handle input changes
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
 
   // Handle sign up form submission
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await createUser(userData); // ✅ 수정
     if (result) {
@@ -42,7 +49,7 @@ export default function SignUp() {
         <div className="mb-4">
           <label className="block mb-1 font-medium">Name</label>
           <input
-            type="string"
+            type="text" // 수정된 부분
             name="name"
             value={userData.name}
             onChange={handleChange}

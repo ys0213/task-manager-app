@@ -1,18 +1,32 @@
+import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import User from "../models/User.js";
+import User from "../models/User";
+
+interface CreateUserBody {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface LoginUserBody {
+  email: string;
+  password: string;
+}
 
 // Create new User
-export const createUser = async (req, res) => {
+export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> => {
   try {
     const { email, password, name } = req.body;
 
     if (!email || !password || !name) {
-      return res.status(400).json({ message: "Email, name and password are required" });
+      res.status(400).json({ message: "Email, name and password are required" });
+      return;
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: "Email already registered" });
+      res.status(409).json({ message: "Email already registered" });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -34,15 +48,21 @@ export const createUser = async (req, res) => {
 };
 
 // Login user
-export const loginUser = async (req, res) => {
+export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    if (!user) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
 
     res.status(200).json({
       name: user.name,
@@ -56,10 +76,13 @@ export const loginUser = async (req, res) => {
 };
 
 // Get user by ID
-export const getUserById = async (req, res) => {
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.params.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
 
     res.status(200).json(user);
   } catch (err) {
@@ -69,7 +92,7 @@ export const getUserById = async (req, res) => {
 };
 
 // Get all users
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await User.find().select("-password");
     res.status(200).json(users);
