@@ -1,7 +1,32 @@
 const API_BASE_URL = "http://localhost:5000/api/user";
 
-// Fetch a user by ID
-export const fetchUser = async (id) => {
+export interface UserData {
+  email: string;
+  name: string;
+  password: string;
+}
+
+export interface UserResponse {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// ID로 유저 조회
+export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/${id}`);
     if (!response.ok) {
@@ -14,8 +39,8 @@ export const fetchUser = async (id) => {
   }
 };
 
-// Create a new user
-export const createUser = async (user) => {
+// 유저 생성
+export const createUser = async (user: UserData): Promise<UserResponse | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}`, {
       method: "POST",
@@ -36,8 +61,8 @@ export const createUser = async (user) => {
   }
 };
 
-// Login user
-export const loginUser = async (credentials) => {
+// 유저 로그인
+export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",

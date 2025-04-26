@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+interface User {
+  email: string;
+  name: string;
+}
+
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
@@ -13,7 +18,7 @@ export default function Login() {
     }
   }, [navigate]);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -29,7 +34,7 @@ export default function Login() {
         throw new Error("Login failed");
       }
 
-      const user = await response.json();
+      const user: User = await response.json();
 
       // Save user info to localStorage
       localStorage.setItem("userEmail", user.email);
