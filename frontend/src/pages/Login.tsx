@@ -2,19 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface User {
-  email: string;
+  username: string;
   name: string;
 }
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
-    if (userEmail) {
-      navigate("/dashboard");  // 이미 로그인한 경우 대시보드로 이동
+    const user = localStorage.getItem("user");
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser?.username) {
+          navigate("/dashboard");
+        }
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
     }
   }, [navigate]);
 
@@ -27,7 +34,7 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
@@ -36,9 +43,8 @@ export default function Login() {
 
       const user: User = await response.json();
 
-      // Save user info to localStorage
-      localStorage.setItem("userEmail", user.email);
-      localStorage.setItem("userName", user.name);
+      // Save user info properly
+      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/dashboard");
     } catch (err) {
@@ -54,11 +60,11 @@ export default function Login() {
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Email</label>
+          <label className="block mb-1 font-medium">Username</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full p-2 border rounded-lg"
             required
           />

@@ -4,10 +4,25 @@ import Pill from "../models/Pill";
 // Create a new pill
 export const createPill = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newPill = new Pill(req.body);
-    const saved = await newPill.save();
-    res.status(201).json(saved);
+    const { name, description, intakeCount, isCurrentlyUsed, pillType } = req.body;
+
+    if (!name) {
+      res.status(400).json({ message: "Pill name is required" });
+      return;
+    }
+
+    const newPill = new Pill({
+      name,
+      description,
+      intakeCount,
+      isCurrentlyUsed,
+      pillType,
+    });
+
+    const savedPill = await newPill.save();
+    res.status(201).json(savedPill);
   } catch (err) {
+    console.error("Create Pill Error:", err);
     res.status(500).json({ error: "Failed to create pill" });
   }
 };
@@ -18,6 +33,7 @@ export const getAllPills = async (req: Request, res: Response): Promise<void> =>
     const pills = await Pill.find();
     res.status(200).json(pills);
   } catch (err) {
+    console.error("Get All Pills Error:", err);
     res.status(500).json({ error: "Failed to fetch pills" });
   }
 };

@@ -1,44 +1,38 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, { Document, Schema } from "mongoose";
 
-// User 한 명에 대한 타입 정의
+// User 타입
 export interface IUser extends Document {
-  email: string;
+  username: string; //Id
   name: string;
   password: string;
-  createdAt: Date;
-  updatedAt: Date;
-  comparePassword: (inputPassword: string) => Promise<boolean>;
+  birthDate?: Date;
+  joinDate: Date;
+  role: "admin" | "user";
+  isActive: boolean;
 }
 
-// 스키마 정의
 const userSchema: Schema<IUser> = new mongoose.Schema(
   {
-    email: {
+    username: {
       type: String,
       required: true,
       unique: true,
+      minlength: 4,
+      match: /^[a-zA-Z0-9]+$/, // 알파벳 + 숫자만 허용
     },
-    name: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
     password: {
       type: String,
       required: true,
     },
+    birthDate: { type: Date },
+    joinDate: { type: Date, required: true, default: Date.now },
+    role: { type: String, enum: ["admin", "user"], default: "user" },
+    isActive: { type: Boolean, required: true, default: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// comparePassword 메서드 구현
-userSchema.methods.comparePassword = async function (inputPassword: string): Promise<boolean> {
-  return await bcrypt.compare(inputPassword, this.password);
-};
-
-// 모델 생성
-const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;

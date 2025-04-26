@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://localhost:5000/api/user";
 
 export interface UserData {
-  email: string;
+  username: string;
   name: string;
   password: string;
 }
@@ -9,20 +9,20 @@ export interface UserData {
 export interface UserResponse {
   id: string;
   name: string;
-  email: string;
+  username: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface LoginCredentials {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface LoginResponse {
   id: string;
   name: string;
-  email: string;
+  username: string;
 }
 
 // ID로 유저 조회
@@ -51,7 +51,8 @@ export const createUser = async (user: UserData): Promise<UserResponse | null> =
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create user");
+      const data = await response.json();
+      throw new Error(data.message || "Failed to create user");
     }
 
     return await response.json();

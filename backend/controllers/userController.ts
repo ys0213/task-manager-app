@@ -1,36 +1,54 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import mongoose from "mongoose";
 
 interface CreateUserBody {
-  email: string;
+  username: string;
   password: string;
   name: string;
+  birthDate?: string; // 프론트에서는 ISO 문자열로 보낼테니까 string으로 받기
 }
 
 interface LoginUserBody {
-  email: string;
+  username: string;
   password: string;
 }
+
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 // Create new User
 export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> => {
   try {
-    const { email, password, name } = req.body;
+    const { username, password, name, birthDate } = req.body;
 
-    if (!email || !password || !name) {
-      res.status(400).json({ message: "Email, name and password are required" });
+    if (!username || !password || !name) {
+      res.status(400).json({ message: "Id, name and password are required" });
       return;
     }
 
-    const existingUser = await User.findOne({ email });
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({
+        message: "비밀번호는 최소 8자, 영어 알파벳/숫자/특수문자를 각각 하나 이상 포함해야 합니다."
+      });
+      return;
+    }
+
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
-      res.status(409).json({ message: "Email already registered" });
+      res.status(409).json({ message: "Id already registered" });
       return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword, name });
+
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      name,
+      ...(birthDate && { birthDate: new Date(birthDate) }), // birthDate가 있을 때만 추가
+    });
+
     const saved = await newUser.save();
 
     res.status(201).json({
@@ -38,11 +56,21 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       user: {
         id: saved._id,
         name: saved.name,
-        email: saved.email
-      }
+        username: saved.username,
+        birthDate: saved.birthDate,
+      },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Create User Error:", err);
+
+    if (err instanceof mongoose.Error.ValidationError) {
+      // 첫 번째 ValidationError 객체를 꺼내서 .message 사용
+      const firstErrorKey = Object.keys(err.errors)[0];
+      const validationError = err.errors[firstErrorKey];
+
+      res.status(400).json({ message: validationError.message });
+      return;
+    }
     res.status(500).json({ message: "Failed to create user" });
   }
 };
@@ -50,9 +78,9 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
 // Login user
 export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
@@ -66,8 +94,9 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
 
     res.status(200).json({
       name: user.name,
-      email: user.email,
-      id: user._id
+      username: user.username,
+      id: user._id,
+      birthDate: user.birthDate,
     });
   } catch (err) {
     console.error("Login error:", err);
