@@ -3,17 +3,25 @@ const API_BASE_URL = "http://localhost:5000/api";
 export interface PillData {
   name: string;
   description?: string;
+  intakeCount?: number;
+  isCurrentlyUsed?: boolean;
+  pillType?: "pill" | "supplement";
+  userId: string;
 }
 
 export interface PillResponse {
   _id: string;
   name: string;
   description?: string;
+  intakeCount: number;
+  isCurrentlyUsed: boolean;
+  pillType: "pill" | "supplement";
+  userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-// 프로젝트 전체 가져오기
+// 전체 가져오기
 export const fetchPills = async (): Promise<PillResponse[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/pills`);
@@ -27,7 +35,7 @@ export const fetchPills = async (): Promise<PillResponse[]> => {
   }
 };
 
-// 프로젝트 생성
+// 생성하기
 export const createPill = async (pillData: PillData): Promise<PillResponse | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/pills`, {

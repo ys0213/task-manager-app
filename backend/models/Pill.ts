@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
 // Pill 타입
 export interface IPill extends Document {
@@ -7,6 +7,7 @@ export interface IPill extends Document {
   intakeCount: number;
   isCurrentlyUsed: boolean;
   pillType: "pill" | "supplement"; // 약 / 영양보조제
+  userId: Types.ObjectId;
 }
 
 const pillSchema: Schema<IPill> = new mongoose.Schema(
@@ -20,6 +21,7 @@ const pillSchema: Schema<IPill> = new mongoose.Schema(
       enum: ["pill", "supplement"], 
       default: "supplement" 
     },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
   },
   { timestamps: true }
 );

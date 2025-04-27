@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Base = () => {
   const [user, setUser] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -17,6 +19,11 @@ const Base = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
   if (!user) {
     return <p>Please log in to view the pill details.</p>;
   }
@@ -24,6 +31,13 @@ const Base = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold">Welcome, {user}!</h2>
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Logout
+      </button>
     </div>
   );
 };

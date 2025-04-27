@@ -1,13 +1,21 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import Pill from "../models/Pill";
 
 // Create a new pill
 export const createPill = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description, intakeCount, isCurrentlyUsed, pillType } = req.body;
+    const { name, description, intakeCount, isCurrentlyUsed, pillType, userId } = req.body;
 
-    if (!name) {
-      res.status(400).json({ message: "Pill name is required" });
+    // name과 userId 둘 다 필수
+    if (!name || !userId) {
+      res.status(400).json({ message: "Pill name and userId are required" });
+      return;
+    }
+
+    // userId가 유효한 ObjectId인지 확인
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400).json({ message: "Invalid userId format" });
       return;
     }
 
@@ -17,6 +25,7 @@ export const createPill = async (req: Request, res: Response): Promise<void> => 
       intakeCount,
       isCurrentlyUsed,
       pillType,
+      userId,
     });
 
     const savedPill = await newPill.save();

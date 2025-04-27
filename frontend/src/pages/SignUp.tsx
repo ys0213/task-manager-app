@@ -7,6 +7,7 @@ interface UserData {
   username: string;
   name: string;
   password: string;
+  confirmPassword: string;  // 비밀번호 확인 추가
   birthDate?: string;  // 선택 입력
 }
 
@@ -15,9 +16,11 @@ export default function SignUp() {
     username: "",
     name: "",
     password: "",
+    confirmPassword: "",
     birthDate: "",
   });
-  const [errorMessage, setErrorMessage] = useState<string>("");  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
   const navigate = useNavigate();
 
   // 입력값 변경 처리
@@ -29,10 +32,26 @@ export default function SignUp() {
     }));
   };
 
+  // 비밀번호 확인 체크
+  const handlePasswordConfirm = () => {
+    if (userData.password !== userData.confirmPassword) {
+      setPasswordError("비밀번호가 일치하지 않습니다.");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   // 회원가입 폼 제출 처리
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");  // 이전 에러 초기화
+    setPasswordError(""); // 비밀번호 확인 에러 초기화
+
+    // 비밀번호 확인 검증
+    if (userData.password !== userData.confirmPassword) {
+      setPasswordError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
     const result = await createUser(userData);
 
@@ -108,6 +127,24 @@ export default function SignUp() {
             required
           />
         </div>
+
+        {/* 비밀번호 확인 입력 */}
+        <div className="mb-6">
+          <label className="block mb-1 font-medium">Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={userData.confirmPassword}
+            onChange={handleChange}
+            onBlur={handlePasswordConfirm} // 입력을 마쳤을 때 비밀번호 확인
+            className="w-full p-2 border rounded-lg"
+            required
+          />
+          {passwordError && (
+            <div className="text-red-600 text-sm">{passwordError}</div>
+          )}
+        </div>
+
 
         {/* 회원가입 버튼 */}
         <button
