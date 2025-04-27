@@ -10,9 +10,26 @@ interface Pill {
 }
 
 const Pills: React.FC = () => {
-  const [pills, setPills] = useState<Pill[]>([]);  // 프로젝트 리스트의 타입을 Pill 배열로 정의
-  const [name, setName] = useState<string>("");  // 프로젝트 이름
-  const [description, setDescription] = useState<string>("");  // 프로젝트 설명
+  const [pills, setPills] = useState<Pill[]>([]);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed._id) {
+          setUserId(parsed._id);
+        }
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     loadPills();
@@ -37,21 +54,31 @@ const Pills: React.FC = () => {
 
   const handleCreatePill = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newPill = { name, description };
-    
+
+    // if (!userId) {
+    //   console.error("User ID is missing");
+    //   return;
+    // }
+
+    const userIdToUse = userId || "680ce9a653867e5102057b73"; // 개발테스트용 하드코딩한 유저아이디
+
+    const newPill = {
+      name,
+      description,
+      userId: userIdToUse,
+    };
+
     try {
       const result = await createPill(newPill);
       if (result) {
         setName("");
         setDescription("");
-        loadPills();  // 새로운 프로젝트 추가 후 프로젝트 목록 다시 로드
+        loadPills();
       }
     } catch (error) {
       console.error("Failed to create pill", error);
     }
   };
-
-  const navigate = useNavigate();
 
   return (
     <div>
@@ -74,7 +101,6 @@ const Pills: React.FC = () => {
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          required
           className="w-full border px-3 py-2 rounded"
         />
         <button
