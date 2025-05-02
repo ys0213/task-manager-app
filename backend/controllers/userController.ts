@@ -7,7 +7,7 @@ interface CreateUserBody {
   username: string;
   password: string;
   name: string;
-  birthDate?: string; // 프론트에서는 ISO 문자열로 보낼테니까 string으로 받기
+  birthDate?: string;
 }
 
 interface LoginUserBody {
@@ -97,6 +97,7 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
       username: user.username,
       id: user._id,
       birthDate: user.birthDate,
+      role:user.role,
     });
   } catch (err) {
     console.error("Login error:", err);
