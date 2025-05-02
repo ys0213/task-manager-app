@@ -12,6 +12,7 @@ export interface UserResponse {
   username: string;
   createdAt: string;
   updatedAt: string;
+  role: string;
 }
 
 export interface LoginCredentials {
@@ -23,6 +24,7 @@ export interface LoginResponse {
   id: string;
   name: string;
   username: string;
+  role: string;
 }
 
 // ID로 유저 조회

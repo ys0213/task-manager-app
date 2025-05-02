@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pillRoutes from "./routes/pillRoutes";
 import userRoutes from "./routes/userRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use("/api/pills", pillRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Test route
 app.get("/", (req: Request, res: Response): void => {
