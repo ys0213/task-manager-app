@@ -36,7 +36,7 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
         Pills
       </Link>
       {user&&user.role === "admin" && (
-        <Link to="/admin" onClick={onClick} className="block hover:underline text-red-400">
+        <Link to="/adminBase" onClick={onClick} className="block hover:underline text-red-400">
           Admin Page
         </Link>
       )}

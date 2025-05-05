@@ -36,3 +36,31 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };
+
+export const userChartMolthly = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await User.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: "$joinDate" },
+            month: { $month: "$joinDate" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } }
+    ]);
+
+    // 형식 변환
+    const formatted = result.map((entry) => ({
+      month: `${entry._id.month}월`,
+      count: entry.count,
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("통계 데이터를 불러오지 못했습니다.");
+  }
+};

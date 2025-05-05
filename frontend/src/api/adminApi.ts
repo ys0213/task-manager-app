@@ -37,5 +37,12 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   }
 };
 
+export const fetchMonthlyUserStats = async () => {
+  const res = await fetch("/api/admin/user-stats/monthly");
+  if (!res.ok) throw new Error("Failed to fetch user stats");
+
+  return await res.json();
+};
+
 
 
