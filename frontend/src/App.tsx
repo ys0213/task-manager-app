@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Pills from './pages/Pills';
 import PillDetail from './pages/PillDetail';
 import Base from './pages/Base';
+import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="pills" element={<Pills />} />
         <Route path="pills/:id" element={<PillDetail />} />
-        <Route path="admin" element={<AdminUsers />} />
+        <Route path="adminBase" element={<AdminBase />} />
+        <Route path="admin/users" element={<AdminUsers />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
