@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Menu } from "lucide-react";
+import YakTokLogo from '../../../YakTok_logo.png';
 
 interface User {
   name: string;
@@ -8,6 +9,7 @@ interface User {
   id: string;
   role : string;
 }
+
 
 
 // Define types for props
@@ -29,6 +31,9 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
           My Page
         </Link>
       )}
+      <Link to="/home" onClick={onClick} className="block hover:underline">
+        HOME
+      </Link>
       <Link to="/dashboard" onClick={onClick} className="block hover:underline">
         Dashboard
       </Link>
@@ -83,9 +88,9 @@ const Layout = () => {
         </div>
 
         {/* App title */}
-        <h1 className="text-2xl font-bold">
+        <h1 className="flex justify-center items-center">
           <Link to="/base" className="hover:underline">
-            약톡
+          <img src={YakTokLogo} alt="약톡" className="w-50" />
           </Link>
         </h1>
         {user && <h3>{user.name}</h3>}
