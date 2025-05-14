@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import YakTokLogo from '../../YakTok_logo.png';
 
@@ -19,36 +19,52 @@ interface NavLinksProps {
 
 // Reusable navigation links component
 const NavLinks = ({ onClick, user }: NavLinksProps) => {
+
+    const location = useLocation();
+    const currentPath = location.pathname;
+
+    const baseMenuClass =
+        "flex items-center px-8 py-1 my-4 rounded-lg transition-colors hover:bg-[#58D68D]/50";
+    const activeClass = "bg-[#58D68D]";
+
+
     return (
     <>
         {!user ? (
-        <Link to="/login" onClick={onClick} className="flex items-center bg-[#58D68D] px-4 py-2 rounded-lg transition-colors">
+        <Link to="/login" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/login" ? activeClass : ""}`}>
             Login
         </Link>
         ) : (
-        <Link to="/mypage" onClick={onClick} className="flex items-center bg-[#58D68D] px-8 py-1 mb-4 rounded-lg transition-colors">
+        <Link to="/mypage" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
             <span className="p-2">아이콘</span>
             <span>설정</span>
         </Link>
         )}
-        <Link to="/home" onClick={onClick} className="flex items-center bg-[#58D68D] px-8 py-1 my-4 rounded-lg transition-colors">
+        <Link to="/home" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/home" ? activeClass : ""}`}>
             <span className="p-2">아이콘</span>
             <span>HOME</span>
         </Link>
-        <Link to="/dashboard" onClick={onClick} className="flex items-center bg-[#58D68D] px-8 py-1 my-4 rounded-lg transition-colors">
+        <Link to="/dashboard" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/dashboard" ? activeClass : ""}`}>
             <span className="p-2">아이콘</span>
             <span>대시보드</span>
         </Link>
-        <Link to="/calendar" onClick={onClick} className="flex items-center bg-[#58D68D] px-8 py-1 my-4 rounded-lg transition-colors">
+        <Link to="/calendar" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/calendar" ? activeClass : ""}`}>
             <span className="p-2">아이콘</span>
             <span>달력</span>
         </Link>
-        <Link to="/pills" onClick={onClick} className="flex items-center bg-[#58D68D] px-8 py-1 my-4 rounded-lg transition-colors">
+        <Link to="/pills" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/pills" ? activeClass : ""}`}>
             <span className="p-2">아이콘</span>
             <span>약추가</span>
         </Link>
         {user&&user.role === "admin" && (
-        <Link to="/adminBase" onClick={onClick} className="block hover:underline text-red-400">
+        <Link to="/adminBase" onClick={onClick} 
+        className="block hover:underline text-red-400">
             Admin Page
         </Link>
         )}
@@ -79,15 +95,15 @@ const Layout = () => {
         {/* 10그리드 중앙 콘텐츠 (양쪽 1그리드 마진) */}
         <div className="shadow">
             {/* Top header */}
-            <header className="flex items-center justify-between h-16 bg-white">
+            <header className="flex items-center justify-between h-20 bg-white">
                 {/* App title 3그리드 */}
                 <h1 className="w-64 bg-[#B0EDCA] ">
-                    <Link to="/base" className="flex justify-center items-center m-2">
-                    <img src={YakTokLogo} alt="약톡" className="h-12"/>
+                    <Link to="/base" className="flex justify-center items-center">
+                    <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
                     </Link>
                 </h1>
                 {/* User profile and notification 7그리드 */}
-                <div className="flex px-5 py-2">
+                <div className="flex px-5 pb-2">
                     <div className="text-gray-800">{user && <h3 className="m-0">{user.name}</h3>}</div>
                     <div className="text-gray-800 ml-4">🔔</div>
                 </div>
