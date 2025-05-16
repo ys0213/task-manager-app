@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+
 
 const Base = () => {
   const [user, setUser] = useState<string | null>(null);
@@ -31,13 +33,13 @@ const Base = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold">Welcome, {user}!</h2>
-      <button
+      <Button
         type="button"
         onClick={handleLogout}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="px-4 py-2 text-sm"
       >
         Logout
-      </button>
+      </Button>
     </div>
   );
 };
