@@ -9,7 +9,25 @@ export function Button({ children, onClick, className = '', ...props }: ButtonPr
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition ${className}`}
+        className={`
+        inline-block 
+        rounded-full 
+        p-5
+        text-sm font-bold 
+        text-[#58D68D] 
+        bg-white 
+        border border-[#58D68D] 
+        hover:bg-[#B0EDCA] 
+        hover:text-white 
+        hover:border-transparent
+        focus:outline-none 
+        focus:ring-2 
+        focus:ring-offset-2 
+        focus:ring-[#B0EDCA]
+        transition 
+        transform 
+        focus:scale-95 
+        duration-150 ${className}`}
       {...props}
     >
       {children}
