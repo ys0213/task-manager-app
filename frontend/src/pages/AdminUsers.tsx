@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers, UserResponse } from "../api/adminApi";
+import { fetchUsers, UserResponse, updateUser } from "../api/adminApi";
 import { useNavigate } from "react-router-dom";
 import UserDetailModal from './AdminUserModal';
 
@@ -68,6 +68,30 @@ const AdminUsers: React.FC = () => {
     setSelectedUser(user);
     setIsModalOpen(true);
   };
+
+  
+  const handleSaveUser = async (updatedUser: User) => {
+    try {
+      const updated = await updateUser(updatedUser.id, {
+        username: updatedUser.username,
+        name: updatedUser.name,
+        joinDate: updatedUser.joinDate.toISOString(),
+        isActive: updatedUser.isActive,
+        role: updatedUser.role,
+        birthDate: updatedUser.birthDate ? updatedUser.birthDate.toISOString() : undefined,
+      });
+      if (updated) {
+        await loadUsers();
+        setIsModalOpen(false);
+      } else {
+        alert("업데이트 실패");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("업데이트 중 오류가 발생했습니다.");
+    }
+  };
+  
 
   // 검색 및 필터링 적용된 리스트
   const filteredUsers = users
@@ -158,6 +182,7 @@ const AdminUsers: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         user={selectedUser}
+        onSave={handleSaveUser}
       />
     </div>
   );

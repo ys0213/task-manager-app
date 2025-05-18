@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { Menu } from "lucide-react";
-import YakTokLogo from '../../YakTok_logo.png';
-import { Home, Bell , Calendar, Pill , Settings } from 'lucide-react';
+// import { Menu } from "lucide-react";
+import YakTokLogo from '../assets/YakTok_logo.png';
+import { Home, Bell , Calendar, Pill , Settings, ShieldUser } from 'lucide-react';
 
 interface User {
     name: string;
@@ -65,8 +65,9 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
         </Link>
         {user&&user.role === "admin" && (
         <Link to="/adminBase" onClick={onClick} 
-        className="block hover:underline text-red-400">
-            Admin Page
+        className={`${baseMenuClass} ${currentPath === "/adminBase" ? activeClass : ""}`}>
+            <span className="p-2"><ShieldUser className="w-6 h-6 text-[#333333]" /></span>
+            <span>관리자 페이지</span>
         </Link>
         )}
     </>

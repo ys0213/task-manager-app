@@ -22,8 +22,8 @@ const Pills: React.FC = () => {
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        if (parsed._id) {
-          setUserId(parsed._id);
+        if (parsed.id) {
+          setUserId(parsed.id);
         }
       } catch (error) {
         console.error("Failed to parse user from localStorage", error);

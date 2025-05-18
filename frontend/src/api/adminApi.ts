@@ -44,5 +44,31 @@ export const fetchMonthlyUserStats = async () => {
   return await res.json();
 };
 
+export const fetchActiveUserCount = async () => {
+  const res = await fetch("/api/admin/user-stats/count");
+  if (!res.ok) throw new Error("Failed to fetch user stats");
 
+  return await res.json();
+};
 
+export const updateUser = async (
+  id: string,
+  updatedUserData: Partial<UserResponse>
+): Promise<UserResponse | null> => {
+  try {
+    const response = await fetch(`/api/admin/userUpdate/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUserData),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update user");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
