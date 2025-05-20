@@ -37,31 +37,36 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
             Login
         </Link>
         ) : (
-        <Link to="/mypage" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
-            <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
-            <span>설정</span>
-        </Link>
-        )}
         <Link to="/home" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/home" ? activeClass : ""}`}>
             <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
             <span>HOME</span>
+        </Link>
+        )}
+        <Link to="/base" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/base" ? activeClass : ""}`}>
+            <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
+            <span>로그인전 HOME 화면</span>
         </Link>
         <Link to="/dashboard" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/dashboard" ? activeClass : ""}`}>
             <span className="p-2"><Pill className="w-6 h-6 text-[#333333]" /></span>
             <span>약 정보</span>
         </Link>
-        <Link to="/calendar" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/calendar" ? activeClass : ""}`}>
+        <Link to="/pillsCalendar" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/pillsCalendar" ? activeClass : ""}`}>
             <span className="p-2"><Calendar className="w-6 h-6 text-[#333333]" /></span>
             <span>달력</span>
         </Link>
-        <Link to="/pills" onClick={onClick} 
+        {/* <Link to="/pills" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/pills" ? activeClass : ""}`}>
             <span className="p-2"><Pill className="w-6 h-6 text-[#333333]" /></span>
             <span>약 추가</span>
+        </Link> */}
+        <Link to="/mypage" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
+            <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
+            <span>설정</span>
         </Link>
         {user&&user.role === "admin" && (
         <Link to="/adminBase" onClick={onClick} 

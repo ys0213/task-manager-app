@@ -17,7 +17,7 @@ export default function Login() {
       try {
         const parsedUser = JSON.parse(user);
         if (parsedUser?.username) {
-          navigate("/dashboard");
+          navigate("/home");
         }
       } catch (error) {
         console.error("Failed to parse user data:", error);
@@ -46,7 +46,7 @@ export default function Login() {
       // Save user info properly
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       console.error("Login error:", err);
     }

@@ -9,6 +9,8 @@ import Pills from './pages/Pills';
 import Home from './pages/Home';
 import PillDetail from './pages/PillDetail';
 import Base from './pages/Base';
+import Mypage from './pages/Mypage';
+import PillsCalendar from './pages/PillsCalendar';
 import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
 
@@ -23,6 +25,8 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="pills" element={<Pills />} />
         <Route path="home" element={<Home />} />
+        <Route path="pillsCalendar" element={<PillsCalendar />} />
+        <Route path="mypage" element={<Mypage />} />
         <Route path="pills/:id" element={<PillDetail />} />
         <Route path="adminBase" element={<AdminBase />} />
         <Route path="admin/users" element={<AdminUsers />} />
