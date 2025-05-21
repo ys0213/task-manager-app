@@ -1,0 +1,84 @@
+/* 전체 달력 텍스트 색상 기본값 설정 */
+.react-calendar {
+    color: #333333;
+    border: none;
+    width: 100%;
+}
+
+/* 요일 제목 (일, 월, 화, ...) */
+.react-calendar__month-view__weekdays {
+    color: #333333;
+}
+
+/* 날짜 숫자 (기본 타일) */
+.react-calendar__tile {
+    color: #333333;
+    margin: 4px;
+    text-align: center;
+}
+
+
+/* 네비게이션 (월 이동 화살표, 월/연도 제목 등) */
+.react-calendar__navigation {
+    color: #333333;
+}
+
+.react-calendar__tile:hover {
+    background-color: #B0EDCA !important; 
+}
+
+/* 기존 선택된 날짜 스타일 */
+.react-calendar__tile--now {
+  background-color: #fde68a !important; /* 연한 노랑 */
+    border-radius: 9999px;
+    font-weight: bold;
+    color: black;
+}
+
+
+/* react-calendar__month-view__days__day--neighboringMonth 클래스가 이전/다음 달 날짜에 붙음 */
+.react-calendar__month-view__days__day--neighboringMonth {
+  visibility: hidden; /* 또는 display: none; */
+}
+
+.react-calendar button {
+    cursor: pointer;
+    text-align: center;
+}
+
+/* 기본 숫자 숨기기 */
+.react-calendar__tile abbr {
+    display: none;
+}
+
+/* 일요일 컬러 */
+.react-calendar__month-view__weekdays__weekday:nth-child(1) abbr {
+  color: #ef4444; /* Tailwind text-red-500 */
+}
+
+/* 토요일 컬러 */
+.react-calendar__month-view__weekdays__weekday:nth-child(7) abbr {
+  color: #3b82f6; /* Tailwind text-blue-500 */
+}
+
+.text-red-500 {
+    color: #ef4444 !important;
+}
+
+.text-blue-500 {
+    color: #3b82f6 !important;
+}
+
+.selected-tile {
+  background-color: #58D68D !important; /* 포인트 색 */
+    border-radius: 9999px;
+    color: black;
+}
+
+.react-calendar__tile--active {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+
+
