@@ -15,6 +15,12 @@
     color: #333333;
     margin: 4px;
     text-align: center;
+    line-height: 1;   
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+    height: 40px; /* 또는 원하는 고정 높이 */
 }
 
 
@@ -27,7 +33,7 @@
     background-color: #B0EDCA !important; 
 }
 
-/* 기존 선택된 날짜 스타일 */
+/* 오늘의 날짜 스타일 */
 .react-calendar__tile--now {
   background-color: #fde68a !important; /* 연한 노랑 */
     border-radius: 9999px;
@@ -80,5 +86,8 @@
   color: inherit !important;
 }
 
-
+.react-calendar__tile span {
+  margin: 0 !important;
+  font-size: 14px !important; /* 필요 시 조절 */
+}
 

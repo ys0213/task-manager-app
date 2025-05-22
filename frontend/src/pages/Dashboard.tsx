@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import  AddButton from "../components/ui/AddButton";
+import { BaseButton } from "../components/ui/BaseButton";
 import pill_c from "../assets/free-icon-pill-5405609.png";
 import pill_t from "../assets/free-icon-tablet-7038906.png";
 import { fetchPills, createPill } from "../api/pillApi";
 import { useNavigate } from "react-router-dom";
+import  Modal from "../components/ui/Modal";
+import ModalForm from '../components/ui/ModalForm';
 
 // Pill 타입 정의
 interface Pill {
@@ -13,12 +16,38 @@ interface Pill {
   description: string;
 }
 
+interface AddPillModalContainerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface PillFormData {
+  _id: string;
+  name: string;
+  description: string;
+  time: string;
+  type: string;
+  alarm: string;
+}
+
 const Dashboard: React.FC = () => {
   const [userName, setUserName] = useState<string>("");
   const [pills, setPills] = useState<Pill[]>([]);
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [formData, setFormData] = useState<PillFormData>({
+    _id: '',
+    name: '',
+    description: '',
+    time: '08:00',
+    type: 'supplement',
+    alarm: 'on',
+  });
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // 알람 토글
+  const [enabled, setEnabled] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -58,87 +87,81 @@ const Dashboard: React.FC = () => {
         console.error("Failed to load pills", error);
       }
     };
-  
-    const handleCreatePill = async (e: React.FormEvent) => {
-      e.preventDefault();
-  
-      // if (!userId) {
-      //   console.error("User ID is missing");
-      //   return;
-      // }
-  
-      const userIdToUse = userId || "680ce9a653867e5102057b73"; // 개발테스트용 하드코딩한 유저아이디
-  
-      const newPill = {
-        name,
-        description,
-        userId: userIdToUse,
+
+
+    // 모달폼에서 데이터 받아오는 부분
+      const handleChange = (field: string, value: string) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
       };
-  
-      try {
-        const result = await createPill(newPill);
-        if (result) {
-          setName("");
-          setDescription("");
-          loadPills();
-        }
-      } catch (error) {
-        console.error("Failed to create pill", error);
-      }
-    };
+
+      const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('제출된 데이터:', formData);
+        setIsModalOpen(false);
+      };
+
+      const handleClickSubmit = () => {
+        formRef.current?.requestSubmit(); // 외부 버튼에서 form 제출 유도
+      };
 
   return (
     <div className="px-4 w-full">
-      {/* 일단 임시로 약 추가하는 폼 여기! 추후 모달로 구현 */}
       <div>
-        <form
-          onSubmit={handleCreatePill}
-          className="mb-6 bg-white shadow p-4 rounded space-y-2"
-        >
-          <input
-            type="text"
-            placeholder="Pill name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full border px-3 py-2 rounded"
-          />
-          <textarea
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-          />
-          <button
-            type="submit"
-            className="bg-[#F9E79F] rounded-[50px] px-6 py-4 m-5 items-center text-[#333333]" 
-          >
+          <AddButton
+            onClick={() => setIsModalOpen(true)}
+            showPlusIcon>
             새로운 약 추가하기
-          </button>
-        </form>
+          </AddButton>
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+            <ModalForm formData={formData} onChange={handleChange} />
+          </form>
+          {/* 모달 외부 제출 버튼 */}
+          {isModalOpen && (
+            <div className="mt-4 flex justify-center">
+              <AddButton onClick={handleClickSubmit} showPlusIcon>
+                새로운 약 추가
+              </AddButton>
+            </div>
+          )}
+        </Modal>
+          
       </div>
       {/* 약 리스트 */}
       <h4 className="font-bold m-1">복용 리스트</h4>
       <div>
-          {pills.map((pill) => (
+          {pills.map((PillFormData) => (
           <Card
-            key={pill._id}
+            key={PillFormData._id}
             className="mb-5"
-            onClick={() => navigate(`/pills/${pill._id}`)}
+            onClick={() => navigate(`/pills/${PillFormData._id}`)}
           >
             <div className="flex items-center justify-between px-6 ">
                 <div className="flex-shrink-0 m-4">
                     <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
                 </div>
                 <div className="flex flex-col items-start justify-center ml-4 flex-grow">
-                    <h4 className="font-semibold">{pill.name}</h4>
+                    <h4 className="font-semibold">{PillFormData.name}</h4>
                     <h5>복용시간 08:00</h5>
-                    <h6>{pill.description}</h6>
+                    <h6>{PillFormData.description}</h6>
                 </div>
-                <div className="flex gap-2">
-                    <Button>수정</Button>
-                    <Button>삭제</Button>
+                <div>
+                <span className="text-sm">{enabled ? 'ON' : 'OFF'}</span>
+                  <div
+                    className={`relative w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors duration-300
+                      ${enabled ? 'bg-green-500' : 'bg-gray-300'}`}
+                    onClick={() => setEnabled(!enabled)}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300
+                        ${enabled ? 'translate-x-6' : 'translate-x-0'}`}
+                    />
+                  </div>
                 </div>
+                {/* <div className="flex gap-2">
+                    <BaseButton>수정</BaseButton>
+                    <BaseButton>삭제</BaseButton>
+                </div> */}
               </div>
                 <div className="flex justify-between px-8 pt-8 pb-2">
                   <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
