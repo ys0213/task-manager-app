@@ -14,7 +14,7 @@ export function Button({ children, onClick, className = '', ...props }: ButtonPr
         rounded-full 
         p-5
         text-sm font-bold 
-        text-[#58D68D] 
+        text-[#333333] 
         bg-white 
         border border-[#58D68D] 
         hover:bg-[#B0EDCA] 

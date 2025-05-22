@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 // import { Menu } from "lucide-react";
 import YakTokLogo from '../assets/YakTok_logo.png';
-import { Home, Bell , Calendar, Pill , Settings, ShieldUser } from 'lucide-react';
+import { Home, Bell , Calendar, Pill , Settings, ShieldUser, KeyRound } from 'lucide-react';
 
 interface User {
     name: string;
@@ -34,7 +34,8 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
         {!user ? (
         <Link to="/login" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/login" ? activeClass : ""}`}>
-            Login
+            <span className="p-2"><KeyRound className="w-6 h-6 text-[#333333]" /></span>
+            <span>LOGIN</span>
         </Link>
         ) : (
         <Link to="/home" onClick={onClick} 
@@ -58,11 +59,6 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
             <span className="p-2"><Calendar className="w-6 h-6 text-[#333333]" /></span>
             <span>달력</span>
         </Link>
-        {/* <Link to="/pills" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/pills" ? activeClass : ""}`}>
-            <span className="p-2"><Pill className="w-6 h-6 text-[#333333]" /></span>
-            <span>약 추가</span>
-        </Link> */}
         <Link to="/mypage" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
             <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
