@@ -5,7 +5,7 @@ import Pill from "../models/Pill";
 // Create a new pill
 export const createPill = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description, intakeCount, isCurrentlyUsed, pillType, userId } = req.body;
+    const { name, description, intakeCycle, isCurrentlyUsed, useAlarm, pillType, userId } = req.body;
 
     // name과 userId 둘 다 필수
     if (!name || !userId) {
@@ -22,8 +22,9 @@ export const createPill = async (req: Request, res: Response): Promise<void> => 
     const newPill = new Pill({
       name,
       description,
-      intakeCount,
+      intakeCycle,
       isCurrentlyUsed,
+      useAlarm,
       pillType,
       userId,
     });

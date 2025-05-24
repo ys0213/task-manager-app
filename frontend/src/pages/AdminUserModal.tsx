@@ -66,7 +66,7 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
         </div>
 
         <div>
-          <label className="block text-sm font-medium">이름 *</label>
+          <label className="block text-sm font-medium">이름</label>
           <input
             type="text"
             value={editUser.name}
@@ -86,9 +86,9 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
         </div>
 
         <div>
-          <label className="block text-sm font-medium">성별 *</label>
+          <label className="block text-sm font-medium">성별</label>
           <select
-            value={editUser.role}
+            value={editUser.gender}
             onChange={(e) => handleChange("gender", e.target.value)}
             className="w-full border p-2 rounded"
           >
@@ -103,7 +103,7 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
         </div>
 
         <div>
-            <label className="block text-sm font-medium">상태 *</label>
+            <label className="block text-sm font-medium">상태</label>
             <select
                 value={editUser.isActive ? "true" : "false"}
                 onChange={(e) => {
@@ -118,7 +118,7 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
         </div>
 
         <div>
-          <label className="block text-sm font-medium">역할 *</label>
+          <label className="block text-sm font-medium">역할</label>
           <select
             value={editUser.role}
             onChange={(e) => handleChange("role", e.target.value)}

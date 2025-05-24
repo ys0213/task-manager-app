@@ -6,13 +6,22 @@ import { useNavigate } from "react-router-dom";
 interface Pill {
   _id: string;
   name: string;
-  description: string;
+  description?: string;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
+  isCurrentlyUsed: boolean;
+  useAlarm: boolean;
+  pillType: "pill" | "supplement"; // 약 / 영양보조제
+  userId: string;
 }
 
 const Pills: React.FC = () => {
   const [pills, setPills] = useState<Pill[]>([]);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [intakeCycle, setIntakeCycle] = useState<Array<"morning" | "lunch" | "evening">>([]);
+  const [isCurrentlyUsed, setIsCurrentlyUsed] = useState<boolean>(true);
+  const [useAlarm, setUseAlarm] = useState<boolean>(true);
+  const [pillType, setPillType] = useState<"pill" | "supplement">("pill");
   const [userId, setUserId] = useState<string>("");
 
   const navigate = useNavigate();
@@ -44,6 +53,11 @@ const Pills: React.FC = () => {
         _id: p._id,
         name: p.name,
         description: p.description ?? "",  // description이 undefined인 경우 빈 문자열로 처리
+        intakeCycle: p.intakeCycle,
+        isCurrentlyUsed: p.isCurrentlyUsed,
+        useAlarm: p.useAlarm,
+        pillType: p.pillType, // 약 / 영양보조제
+        userId: p.userId,
       }));
       
       setPills(normalized);
@@ -65,6 +79,10 @@ const Pills: React.FC = () => {
     const newPill = {
       name,
       description,
+      intakeCycle,
+      isCurrentlyUsed,
+      useAlarm,
+      pillType,
       userId: userIdToUse,
     };
 

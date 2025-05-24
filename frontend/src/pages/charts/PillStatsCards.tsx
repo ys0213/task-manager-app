@@ -5,8 +5,9 @@ import { fetchPills } from "../../api/pillApi";
 interface Pill {
   _id: string;
   name: string;
-  intakeCount: number;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
   isCurrentlyUsed: boolean;
+  useAlarm: boolean;
   pillType: string;
   userId: string;
   createdAt: string;

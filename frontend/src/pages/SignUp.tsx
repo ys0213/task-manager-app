@@ -127,7 +127,7 @@ export default function SignUp() {
           <select
             value={userData.gender}
             onChange={(e) => handleChangeEnum("gender", e.target.value)}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-2 border rounded-lg bg-gray-400"
           >
             <option value="male">남자</option>
             <option value="female">여자</option>

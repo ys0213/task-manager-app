@@ -4,8 +4,9 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 export interface IPill extends Document {
   name: string;
   description?: string;
-  intakeCount: number;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
   isCurrentlyUsed: boolean;
+  useAlarm: boolean;
   pillType: "pill" | "supplement"; // 약 / 영양보조제
   userId: Types.ObjectId;
 }
@@ -14,8 +15,9 @@ const pillSchema: Schema<IPill> = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String },
-    intakeCount: { type: Number, default: 1, min: 1 }, // 최소 1 이상
+    intakeCycle: { type: [String], enum: ["morning", "lunch", "evening"], required: true, },
     isCurrentlyUsed: { type: Boolean, default: true },
+    useAlarm: { type: Boolean, default: true },
     pillType: { 
       type: String, 
       enum: ["pill", "supplement"], 

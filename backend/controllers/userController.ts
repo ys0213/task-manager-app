@@ -8,6 +8,7 @@ interface CreateUserBody {
   password: string;
   name: string;
   birthDate: string;
+  gender: string;
 }
 
 interface LoginUserBody {
@@ -20,7 +21,7 @@ const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8
 // Create new User
 export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> => {
   try {
-    const { username, password, name, birthDate } = req.body;
+    const { username, password, name, birthDate, gender } = req.body;
 
     if (!username || !password || !name) {
       res.status(400).json({ message: "Id, name and password are required" });
@@ -46,7 +47,8 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       username,
       password: hashedPassword,
       name,
-      ...(birthDate && { birthDate: new Date(birthDate) }), // birthDate가 있을 때만 추가
+      birthDate: new Date(birthDate), // birthDate가 있을 때만 추가
+      gender
     });
 
     const saved = await newUser.save();
@@ -58,6 +60,7 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
         name: saved.name,
         username: saved.username,
         birthDate: saved.birthDate,
+        gender: saved.gender
       },
     });
   } catch (err: any) {
@@ -98,6 +101,7 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
       id: user._id,
       birthDate: user.birthDate,
       role:user.role,
+      gender:user.gender
     });
   } catch (err) {
     console.error("Login error:", err);

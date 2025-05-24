@@ -57,7 +57,7 @@ const AdminUsers: React.FC = () => {
         joinDate: new Date(u.joinDate),
         isActive: u.isActive,
         role: u.role,
-        birthDate: u.birthDate,
+        birthDate: new Date(u.birthDate),
         gender: u.gender,
       }));
       setUsers(parsed);
@@ -169,7 +169,7 @@ const AdminUsers: React.FC = () => {
             <h3 className="text-lg font-semibold">{user.name}</h3>
             <p className="text-sm text-gray-600">아이디: {user.username}</p>
             <p className="text-sm text-gray-600">생일: {user.birthDate.toLocaleDateString('ko-KR')}</p>
-            <p className="text-sm text-gray-600">성별: {user.gender}</p>
+            <p className="text-sm text-gray-600">성별: {user.gender === "male" ? "남자" : "여자"}</p>
             <p className="text-sm text-gray-600">가입일: {user.joinDate.toLocaleDateString('ko-KR')}</p>
             <p className="text-sm text-gray-600">상태: {user.isActive ? '활동중' : '탈퇴회원'}</p>
             <p className="text-sm text-gray-600">유형: {user.role === 'admin' ? '관리자' : '일반회원'}</p>

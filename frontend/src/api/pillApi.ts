@@ -3,9 +3,10 @@ const API_BASE_URL = "http://localhost:5000/api";
 export interface PillData {
   name: string;
   description?: string;
-  intakeCount?: number;
-  isCurrentlyUsed?: boolean;
-  pillType?: "pill" | "supplement";
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
+  isCurrentlyUsed: boolean;
+  useAlarm: boolean;
+  pillType: "pill" | "supplement";
   userId: string;
 }
 
@@ -13,8 +14,9 @@ export interface PillResponse {
   _id: string;
   name: string;
   description?: string;
-  intakeCount: number;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
   isCurrentlyUsed: boolean;
+  useAlarm: boolean;
   pillType: "pill" | "supplement";
   userId: string;
   createdAt: string;
