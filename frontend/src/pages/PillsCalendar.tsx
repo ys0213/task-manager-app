@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
+import { BaseButton } from "../components/ui/BaseButton";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../styles/custom-calendar.css';
+import '../styles/CustomCalendar.css';
 import pill_c from "../assets/free-icon-pill-5405609.png";
 import pill_t from "../assets/free-icon-tablet-7038906.png";
 import { fetchPills, createPill } from "../api/pillApi";
@@ -128,22 +128,22 @@ const PillsCalendar : React.FC  = () => {
 
     const baseClass = 'text-[16px] m-[4px]';
     const colorClass = day === 0
-      ? 'text-red-500'
-      : day === 6
-      ? 'text-blue-500'
-      : 'text-[#333]';
+        ? 'text-red-500'
+        : day === 6
+        ? 'text-blue-500'
+        : 'text-[#333]';
 
     // ✅ selectedDate일 경우 Tailwind로 완전한 커스터마이징
     const selectedClass = isSelected
-      ? 'bg-[#58D68D] text-black rounded-full px-[6px] py-[2px] font-semibold'
-      : '';
+        ? 'bg-[#58D68D] text-black rounded-full px-[6px] py-[2px] font-semibold'
+        : '';
 
-    return (
-      <span className={`${baseClass} ${colorClass} ${selectedClass}`}>
-        {date.getDate()}
-      </span>
-    );
-  }}
+        return (
+        <span className={`${baseClass} ${colorClass} ${selectedClass}`}>
+            {date.getDate()}
+        </span>
+        );
+    }}
         />
 
         </div>
