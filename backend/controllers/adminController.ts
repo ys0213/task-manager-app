@@ -29,6 +29,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       isActive: user.isActive,
       joinDate: user.joinDate,
       birthDate: user.birthDate,
+      gender: user.gender,
     }));
     res.status(200).json(formattedUsers);
   } catch (err) {
@@ -98,6 +99,7 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
       isActive: req.body.isActive,
       birthDate: req.body.birthDate,
       joinDate: req.body.joinDate,
+      gender: req.body.gender,
     };
 
     // 해당 유저를 찾아서 업데이트
@@ -117,6 +119,7 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
       isActive: updatedUser.isActive,
       joinDate: updatedUser.joinDate,
       birthDate: updatedUser.birthDate,
+      gender: updatedUser.gender,
     });
   } catch (err) {
     console.error("Update User Error:", err);

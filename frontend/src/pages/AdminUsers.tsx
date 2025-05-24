@@ -11,7 +11,8 @@ interface User {
   joinDate: Date;
   isActive: boolean;
   role: string;
-  birthDate?: Date;
+  birthDate: Date;
+  gender: string;
 }
 
 const AdminUsers: React.FC = () => {
@@ -56,7 +57,8 @@ const AdminUsers: React.FC = () => {
         joinDate: new Date(u.joinDate),
         isActive: u.isActive,
         role: u.role,
-        birthDate: u.birthDate ? new Date(u.birthDate) : undefined,
+        birthDate: u.birthDate,
+        gender: u.gender,
       }));
       setUsers(parsed);
     } catch (error) {
@@ -78,7 +80,8 @@ const AdminUsers: React.FC = () => {
         joinDate: updatedUser.joinDate.toISOString(),
         isActive: updatedUser.isActive,
         role: updatedUser.role,
-        birthDate: updatedUser.birthDate ? updatedUser.birthDate.toISOString() : undefined,
+        birthDate: updatedUser.birthDate,
+        gender: updatedUser.gender,
       });
       if (updated) {
         await loadUsers();
@@ -165,11 +168,8 @@ const AdminUsers: React.FC = () => {
           >
             <h3 className="text-lg font-semibold">{user.name}</h3>
             <p className="text-sm text-gray-600">아이디: {user.username}</p>
-            {user.birthDate ? (
-              <p className="text-sm text-gray-600">생일: {user.birthDate.toLocaleDateString('ko-KR')}</p>
-            ) : (
-              <p className="text-sm text-gray-600">생일: 미입력</p>
-            )}
+            <p className="text-sm text-gray-600">생일: {user.birthDate.toLocaleDateString('ko-KR')}</p>
+            <p className="text-sm text-gray-600">성별: {user.gender}</p>
             <p className="text-sm text-gray-600">가입일: {user.joinDate.toLocaleDateString('ko-KR')}</p>
             <p className="text-sm text-gray-600">상태: {user.isActive ? '활동중' : '탈퇴회원'}</p>
             <p className="text-sm text-gray-600">유형: {user.role === 'admin' ? '관리자' : '일반회원'}</p>

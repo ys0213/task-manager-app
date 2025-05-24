@@ -5,7 +5,8 @@ export interface IUser extends Document {
   username: string; //Id
   name: string;
   password: string;
-  birthDate?: Date;
+  birthDate: Date;
+  gender:string;
   joinDate: Date;
   role: "admin" | "user";
   isActive: boolean;
@@ -25,7 +26,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: String,
       required: true,
     },
-    birthDate: { type: Date },
+    birthDate: { type: Date, required: true },
+    gender: { type: String, required: true, enum: ["male", "female"] },
     joinDate: { type: Date, required: true, default: Date.now },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     isActive: { type: Boolean, required: true, default: true },

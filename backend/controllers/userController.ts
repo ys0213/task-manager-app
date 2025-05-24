@@ -7,7 +7,7 @@ interface CreateUserBody {
   username: string;
   password: string;
   name: string;
-  birthDate?: string;
+  birthDate: string;
 }
 
 interface LoginUserBody {

@@ -7,7 +7,8 @@ interface User {
   joinDate: Date;
   isActive: boolean;
   role: string;
-  birthDate?: Date;
+  birthDate: Date;
+  gender: string;
 }
 
 interface Props {
@@ -35,7 +36,7 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
   };
 
   const handleDateChange = (value: string) => {
-    setEditUser((prev) => (prev ? { ...prev, birthDate: value ? new Date(value) : undefined } : prev));
+    setEditUser((prev) => (prev ? { ...prev, birthDate: new Date(value) } : prev));
   };
 
   const handleSubmit = () => {
@@ -78,10 +79,22 @@ const UserDetailModal: React.FC<Props> = ({ isOpen, onClose, user, onSave }) => 
           <label className="block text-sm font-medium">생일</label>
           <input
             type="date"
-            value={editUser.birthDate ? new Date(editUser.birthDate).toISOString().substring(0, 10) : ""}
+            value={new Date(editUser.birthDate).toISOString().substring(0, 10)}
             onChange={(e) => handleDateChange(e.target.value)}
             className="w-full border p-2 rounded"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">성별 *</label>
+          <select
+            value={editUser.role}
+            onChange={(e) => handleChange("gender", e.target.value)}
+            className="w-full border p-2 rounded"
+          >
+            <option value="male">남자</option>
+            <option value="female">여자</option>
+          </select>
         </div>
 
         <div>

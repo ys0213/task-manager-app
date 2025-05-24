@@ -7,7 +7,8 @@ export interface UserResponse {
   joinDate: string;
   isActive: boolean;
   role: string;
-  birthDate?: string;
+  birthDate: Date;
+  gender: string;
 }
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {

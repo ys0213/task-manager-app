@@ -8,7 +8,8 @@ interface UserData {
   name: string;
   password: string;
   confirmPassword: string;  // 비밀번호 확인 추가
-  birthDate?: string;  // 선택 입력
+  birthDate: string;
+  gender: string;
 }
 
 export default function SignUp() {
@@ -18,6 +19,7 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
     birthDate: "",
+    gender: "",
   });
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
@@ -30,6 +32,10 @@ export default function SignUp() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleChangeEnum = (field: keyof UserData, value: string) => {
+    setUserData((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
   // 비밀번호 확인 체크
@@ -103,9 +109,9 @@ export default function SignUp() {
           />
         </div>
 
-        {/* 생년월일 입력 (선택 사항) */}
+        {/* 생년월일 입력 */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Birth Date (Optional)</label>
+          <label className="block mb-1 font-medium">Birth Date</label>
           <input
             type="date"
             name="birthDate"
@@ -113,6 +119,19 @@ export default function SignUp() {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
+        </div>
+
+        {/* 성별 입력 */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Gender</label>
+          <select
+            value={userData.gender}
+            onChange={(e) => handleChangeEnum("gender", e.target.value)}
+            className="w-full p-2 border rounded-lg"
+          >
+            <option value="male">남자</option>
+            <option value="female">여자</option>
+          </select>
         </div>
 
         {/* 비밀번호 입력 */}
