@@ -1,6 +1,5 @@
-import express, { Request, Response } from "express";
-import { createPill, getAllPills } from "../controllers/pillController";
-import Pill from "../models/Pill";
+import express from "express";
+import { createPill, getAllPills, getPillsByUserID, getPillById } from "../controllers/pillController";
 
 const router = express.Router();
 
@@ -10,22 +9,11 @@ router.post("/", createPill);
 // GET /api/pills/ → Get all pills
 router.get("/", getAllPills);
 
+// GET /api/pills/ → Get all pills
+router.get("/user/:id", getPillsByUserID);
+
 // GET /api/pills/:id → Get pill by ID
-router.get(
-  "/:id",
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const pill = await Pill.findById(req.params.id);
-      if (!pill) {
-        res.status(404).json({ message: "Pill not found" });
-        return;
-      }
-      res.json(pill);
-    } catch (err) {
-      console.error("Get Pill Error:", err);
-      res.status(500).json({ message: "Server error" });
-    }
-  }
-);
+router.get("/:id", getPillById);
+
 
 export default router;

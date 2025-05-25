@@ -14,6 +14,6 @@ const userPillSchema: Schema<IUserPill> = new mongoose.Schema(
   { timestamps: true }
 );
 
-const UserPill = mongoose.model<IUserPill>("UserPill", userPillSchema);
+const UserPill = mongoose.model<IUserPill>("UserPill", userPillSchema, "user_pill");
 
 export default UserPill;

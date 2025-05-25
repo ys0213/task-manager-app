@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5000/api/pills";
 
 export interface PillData {
   name: string;
@@ -26,7 +26,21 @@ export interface PillResponse {
 // 전체 가져오기
 export const fetchPills = async (): Promise<PillResponse[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/pills`);
+    const response = await fetch(`${API_BASE_URL}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch pills");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+// 유저별 약리스트 가져오기
+export const fetchPillsByUserID = async (userId: string): Promise<PillResponse[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user/${userId}`);
     if (!response.ok) {
       throw new Error("Failed to fetch pills");
     }
@@ -40,7 +54,7 @@ export const fetchPills = async (): Promise<PillResponse[]> => {
 // 생성하기
 export const createPill = async (pillData: PillData): Promise<PillResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/pills`, {
+    const response = await fetch(`${API_BASE_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

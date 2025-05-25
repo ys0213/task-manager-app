@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPills, createPill } from "../api/pillApi";
+import { fetchPills, createPill, fetchPillsByUserID } from "../api/pillApi";
 import { useNavigate } from "react-router-dom";
 
 // Pill 타입 정의
@@ -41,13 +41,14 @@ const Pills: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadPills();
-  }, []);
+    if (userId) {
+      loadPills(userId);
+    }    
+  }, [userId]);
 
-  const loadPills = async () => {
+  const loadPills = async ( userId:string) => {
     try {
-      const data = await fetchPills();
-      
+      const data = await fetchPillsByUserID(userId);
       // undefined인 description을 빈 문자열로 처리
       const normalized: Pill[] = data.map((p) => ({
         _id: p._id,
@@ -69,12 +70,10 @@ const Pills: React.FC = () => {
   const handleCreatePill = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if (!userId) {
-    //   console.error("User ID is missing");
-    //   return;
-    // }
-
-    const userIdToUse = userId || "680ce9a653867e5102057b73"; // 개발테스트용 하드코딩한 유저아이디
+    if (!userId) {
+      console.error("User ID is missing");
+      return;
+    }
 
     const newPill = {
       name,
@@ -83,7 +82,7 @@ const Pills: React.FC = () => {
       isCurrentlyUsed,
       useAlarm,
       pillType,
-      userId: userIdToUse,
+      userId
     };
 
     try {
@@ -91,7 +90,7 @@ const Pills: React.FC = () => {
       if (result) {
         setName("");
         setDescription("");
-        loadPills();
+        loadPills(userId);
       }
     } catch (error) {
       console.error("Failed to create pill", error);
