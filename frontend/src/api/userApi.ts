@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api/user";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export interface UserData {
   username: string;
@@ -30,7 +30,7 @@ export interface LoginResponse {
 // ID로 유저 조회
 export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${id}`);
+    const response = await fetch(`${API_BASE_URL}/user/${id}`);
     if (!response.ok) {
       throw new Error("Failed to fetch user");
     }
@@ -44,7 +44,7 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
 // 유저 생성
 export const createUser = async (user: UserData): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}`, {
+    const response = await fetch(`${API_BASE_URL}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export const createUser = async (user: UserData): Promise<UserResponse | null> =
 // 유저 로그인
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${API_BASE_URL}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

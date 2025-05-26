@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api/admin";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export interface UserResponse {
   id: string; //DB system id
@@ -13,7 +13,7 @@ export interface UserResponse {
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users`);
+    const response = await fetch(`${API_BASE_URL}/admin/users`);
     if (!response.ok) {
       throw new Error("Failed to fetch users");
     }
@@ -27,7 +27,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
 // ID로 유저 조회
 export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/${id}`);
+    const response = await fetch(`${API_BASE_URL}/admin/user/${id}`);
     if (!response.ok) {
       throw new Error("Failed to fetch user");
     }
