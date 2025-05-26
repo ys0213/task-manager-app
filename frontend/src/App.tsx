@@ -17,6 +17,7 @@ import AdminUsers from './pages/AdminUsers';
 console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
 
 function App() {
+  console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
