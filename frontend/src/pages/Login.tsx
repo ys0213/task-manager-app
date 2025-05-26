@@ -14,6 +14,8 @@ export default function Login() {
   const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
+    console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
+
     const user = localStorage.getItem("user");
     if (user) {
       try {
