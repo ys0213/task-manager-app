@@ -1,5 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+console.log("API BASE URL:", import.meta.env.VITE_API_URL);
+
 export interface UserResponse {
   id: string; //DB system id
   username: string; // user login id
