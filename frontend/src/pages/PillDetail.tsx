@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 // Pill 타입 정의
 interface Pill {
   name: string;
@@ -36,7 +38,7 @@ const PillDetail: React.FC = () => {
   useEffect(() => {
     const fetchPill = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/pills/${id}`);
+        const res = await fetch(`${API_BASE_URL}/pills/${id}`);
         const data = await res.json();
         setPill(data.pill);
         setUser(data.user);

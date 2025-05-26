@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 // Task와 Comment 타입 정의 (API 스펙에 맞게 추가 필드 조정 가능)
 interface Comment {
   id: number;
@@ -29,7 +31,7 @@ export default function TaskDetail() {
 
     const fetchTask = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/tasks/${id}`);
+        const res = await fetch(`${API_BASE_URL}/tasks/${id}`);
         if (!res.ok) {
           throw new Error("Task not found");
         }
