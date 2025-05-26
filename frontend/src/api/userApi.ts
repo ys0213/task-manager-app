@@ -69,6 +69,7 @@ export const createUser = async (user: UserData): Promise<UserResponse | null> =
 // 유저 로그인
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse | null> => {
   try {
+    console.log("API BASE URL:", import.meta.env.VITE_API_URL);
     const response = await fetch(`${API_BASE_URL}/user/login`, {
       method: "POST",
       headers: {
