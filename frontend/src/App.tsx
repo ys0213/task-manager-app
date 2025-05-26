@@ -14,6 +14,8 @@ import PillsCalendar from './pages/PillsCalendar';
 import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
 
+console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
+
 function App() {
   return (
     <Routes>
