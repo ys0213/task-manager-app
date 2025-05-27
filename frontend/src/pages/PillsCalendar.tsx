@@ -114,36 +114,45 @@ const PillsCalendar : React.FC  = () => {
         calendarType="gregory"
         tileDisabled={({ date, view }) => {
             if (view === 'month') {
-            const now = new Date();
-            return date.getMonth() !== now.getMonth();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date > today;
             }
             return false;
         }}
+        tileClassName={({ date, view }) => {
+            if (view === 'month') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (date > today) {
+                return 'future-date';
+            }
+            }
+            return undefined;
+        }}
 
         tileContent={({ date, view }) => {
-    if (view !== 'month') return null;
+            if (view !== 'month') return undefined;
 
-    const day = date.getDay();
-    const isSelected = date.toDateString() === selectedDate.toDateString();
+            const day = date.getDay();
+            const isSelected = date.toDateString() === selectedDate.toDateString();
 
-    const baseClass = 'text-[16px] m-[4px]';
-    const colorClass = day === 0
-        ? 'text-red-500'
-        : day === 6
-        ? 'text-blue-500'
-        : 'text-[#333]';
+            const baseClass = 'text-[16px] m-[4px]';
+            const colorClass = day === 0
+                ? 'text-red-500'
+                : day === 6
+                ? 'text-blue-500'
+                : 'text-[#333]';
 
-    // ✅ selectedDate일 경우 Tailwind로 완전한 커스터마이징
-    const selectedClass = isSelected
-        ? 'bg-[#58D68D] text-black rounded-full px-[6px] py-[2px] font-semibold'
-        : '';
-
-        return (
-        <span className={`${baseClass} ${colorClass} ${selectedClass}`}>
-            {date.getDate()}
-        </span>
-        );
-    }}
+            // ✅ selectedDate일 경우 Tailwind로 완전한 커스터마이징
+            const selectedClass = isSelected
+                ? ''
+                : '';
+            return view === 'month' ? (
+                <span className={`${baseClass} ${colorClass} ${selectedClass}`}>
+                    {date.getDate()}
+                </span>) : undefined;
+            }}
         />
 
         </div>

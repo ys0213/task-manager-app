@@ -106,7 +106,7 @@ const Layout = () => {
                     </Link>
                 </h1>
                 {/* User profile and notification 7그리드 */}
-                <div className="flex w-full max-w-screen-md px-5 pb-2">
+                <div className="flex w-full max-w-screen-md px-5 pb-2 justify-end">
                     <div>{user && <h5 className="m-0">{user.name}</h5>}</div>
                     <div className="ml-4"><Bell className="w-6 h-6 text-[#58D68D]"></Bell></div>
                 </div>

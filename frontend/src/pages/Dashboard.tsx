@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
               </div>
                 <div className="flex justify-between px-8 pt-8 pb-2">
                   <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
-                  <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
+                  <img src={pill_t} alt="약 캡슐 아이콘" className="w-12" />
                   <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
                   <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
                   <img src={pill_c} alt="약 캡슐 아이콘" className="w-12" />
