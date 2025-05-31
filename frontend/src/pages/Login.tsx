@@ -24,7 +24,7 @@ export default function Login() {
           navigate("/home");
         }
       } catch (error) {
-        console.error("Failed to parse user data:", error);
+        console.error("Failed to parse user data:", error);        
       }
     }
   }, [navigate]);
@@ -41,8 +41,8 @@ export default function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
-        throw new Error("Login failed");
+      if (!response.ok) {        
+        throw new Error("Login failed");        
       }
 
       const user: User = await response.json();
@@ -53,6 +53,7 @@ export default function Login() {
       navigate("/home");
     } catch (err) {
       console.error("Login error:", err);
+      alert("로그인에 실패했습니다.");
     }
   };
 
@@ -93,7 +94,7 @@ export default function Login() {
         {/* Link to signup */}
         <p className="mt-4 text-center">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
+          <a href="/task-manager-app/#/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
             Sign up
           </a>
         </p>

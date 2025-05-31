@@ -5,6 +5,8 @@ console.log("API BASE URL:", import.meta.env.VITE_API_URL);
 export interface UserData {
   username: string;
   name: string;
+  birthDate:string;
+  gender:string;
   password: string;
 }
 
@@ -88,3 +90,10 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
     return null;
   }
 };
+
+export async function checkUsernameExists(username: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE_URL}/user/check-username?username=${encodeURIComponent(username)}`);
+  if (!res.ok) throw new Error("Failed to check username");
+  const data = await res.json();
+  return data.exists;
+}

@@ -47,7 +47,7 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       username,
       password: hashedPassword,
       name,
-      birthDate: new Date(birthDate), // birthDate가 있을 때만 추가
+      birthDate: new Date(birthDate),
       gender
     });
 
@@ -83,7 +83,7 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username, isActive: true });
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
@@ -135,3 +135,22 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };
+
+//check user name duplicate
+export const checkUsernameExists = async(req: Request, res: Response): Promise<void> => {
+  const username = req.query.username as string;
+
+  if (!username) {
+    res.status(400).json({ error: "username query parameter is required" });
+  }
+
+  try {
+    // isActive가 true인 유저 중 username 조회
+    const user = await User.findOne({ username, isActive: true });
+
+    res.json({ exists: !!user });
+  } catch (error) {
+    console.error("checkUsernameExists error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
