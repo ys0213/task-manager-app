@@ -88,3 +88,45 @@ export const homeUserPills = async (userId: string): Promise<PillResponse[]> => 
     return [];
   }
 };
+
+export type IntakeTime = "morning" | "lunch" | "evening";
+
+export const recordPillIntake = async (pillId: string, intakeTime: IntakeTime): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/record`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pillId, intakeTime }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "복용 기록 실패");
+    }
+  } catch (err) {
+    console.error("복용 기록 에러:", err);
+    throw err;
+  }
+};
+
+export const cancelPillIntake = async (pillId: string, intakeTime: IntakeTime): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/cancel`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pillId, intakeTime }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "복용 취소 실패");
+    }
+  } catch (err) {
+    console.error("복용 취소 에러:", err);
+    throw err;
+  }
+};

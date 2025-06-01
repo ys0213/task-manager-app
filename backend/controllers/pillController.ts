@@ -117,18 +117,116 @@ export const getTodayPillsByUser = async (req: Request, res: Response): Promise<
       intakeDateTime: { $gte: start, $lt: end },
     }).lean();
 
-    // 각 약에 복용 여부와 시간 추가
+    // 각 약에 intakeCycle 기준으로 taken 여부 및 시간 배열 추가
     const enrichedPills = pills.map(pill => {
-      const userPill = userPills.find(up => up.pillId.toString() === pill._id.toString());
+      const takenHistory = (pill.intakeCycle || []).map((time: string) => {
+        const match = userPills.find(
+          up => up.pillId.toString() === pill._id.toString() && up.intakeTime === time
+        );
+        return {
+          intakeTime: time,
+          taken: !!match,
+          takenTime: match?.intakeDateTime || null,
+        };
+      });
+
       return {
         ...pill,
-        taken: !!userPill,
-        takenTime: userPill ? userPill.intakeDateTime : null,
+        takenHistory,
       };
     });
+
     res.status(200).json(enrichedPills);
   } catch (err) {
     console.error("Get Pills By UserId Error:", err);
     res.status(500).json({ success: false, error: "Failed to fetch today's pills" });
+  }
+};
+
+// 약 복용 기록
+export const recordPillIntake = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { pillId, intakeTime } = req.body;
+
+    if (!pillId || !intakeTime) {
+      res.status(400).json({ message: "pillId 또는 intakeTime 누락" });
+      return;
+    }
+
+    if (!["morning", "lunch", "evening"].includes(intakeTime)) {
+      res.status(400).json({ message: "intakeTime 값이 올바르지 않습니다." });
+      return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(pillId)) {
+      res.status(400).json({ message: "유효하지 않은 pillId" });
+      return;
+    }
+
+    const pill = await Pill.findById(pillId);
+    if (!pill) {
+      res.status(404).json({ message: "해당 약을 찾을 수 없습니다." });
+      return;
+    }
+
+    const now = new Date();
+    now.setMilliseconds(0); // 정확도 통일
+
+    // 이미 같은 날짜, intakeTime 기록이 있는지 확인
+    const { start, end } = getTodayRange();
+    const existing = await UserPill.findOne({
+      pillId,
+      intakeTime,
+      intakeDateTime: { $gte: start, $lt: end },
+    });
+
+    if (existing) {
+      res.status(409).json({ message: "이미 해당 시간대에 복용 기록이 있습니다." });
+      return;
+    }
+
+    const newUserPill = new UserPill({
+      pillId,
+      intakeTime,
+      intakeDateTime: now,
+    });
+
+    await newUserPill.save();
+
+    res.status(200).json({ message: "복용 기록 완료" });
+  } catch (err) {
+    console.error("복용 기록 에러:", err);
+    res.status(500).json({ message: "서버 오류" });
+  }
+};
+
+// 약 복용 취소
+export const cancelPillIntake = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { pillId, intakeTime } = req.body;
+
+    if (!pillId || !intakeTime) {
+      res.status(400).json({ message: "pillId와 intakeTime이 필요합니다." });
+      return;
+    }
+
+    const { start, end } = getTodayRange();
+
+    const recordToDelete = await UserPill.findOne({
+      pillId,
+      intakeTime,
+      intakeDateTime: { $gte: start, $lt: end },
+    });
+
+    if (!recordToDelete) {
+      res.status(404).json({ message: "오늘 해당 시간대 복용 기록이 없습니다." });
+      return;
+    }
+
+    await recordToDelete.deleteOne();
+    res.status(200).json({ message: "복용 기록 취소 완료" });
+  } catch (err) {
+    console.error("복용 취소 에러:", err);
+    res.status(500).json({ message: "서버 오류" });
   }
 };
