@@ -74,3 +74,17 @@ export const createPill = async (pillData: PillData): Promise<PillResponse | nul
     return null;
   }
 };
+
+//유저 홈 오늘의 약 목록 불러오기
+export const homeUserPills = async (userId: string): Promise<PillResponse[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/today/${userId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch today's pills");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
