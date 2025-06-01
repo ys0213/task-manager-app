@@ -13,7 +13,7 @@ const PORT: number = parseInt(process.env.PORT ?? "5000", 10);
 
 // Middleware
 app.use(cors({
-  origin: "*", // "https://ys0213.github.io"
+  origin: "https://ys0213.github.io", //"*"
   credentials: true
 }));
 app.use(express.json());
