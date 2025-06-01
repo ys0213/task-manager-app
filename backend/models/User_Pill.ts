@@ -4,12 +4,14 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 export interface IUserPill extends Document {
   pillId: Types.ObjectId;
   intakeDateTime: Date;
+  intakeTime:string;
 }
 
 const userPillSchema: Schema<IUserPill> = new mongoose.Schema(
   {    
     pillId: { type: mongoose.Schema.Types.ObjectId, ref: "Pill", required: true },
     intakeDateTime: { type: Date, required: true, default: Date.now },
+    intakeTime:{type: String,}
   },
   { timestamps: true }
 );

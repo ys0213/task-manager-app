@@ -1,5 +1,5 @@
 import express from "express";
-import { createPill, getAllPills, getPillsByUserID, getPillById, getTodayPillsByUser } from "../controllers/pillController";
+import { createPill, getAllPills, getPillsByUserID, getPillById, getTodayPillsByUser, recordPillIntake, cancelPillIntake } from "../controllers/pillController";
 
 const router = express.Router();
 
@@ -17,5 +17,8 @@ router.get("/:id", getPillById);
 
 // GET /api/pills/today/userid → Get pill by ID
 router.get("/today/:id", getTodayPillsByUser);
+
+router.post("/record", recordPillIntake);
+router.post("/cancel", cancelPillIntake);
 
 export default router;
