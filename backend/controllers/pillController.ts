@@ -88,3 +88,47 @@ export const getPillById = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// today
+const getTodayRange = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return { start, end };
+};
+
+//Get today's pill by userID
+export const getTodayPillsByUser = async (req: Request, res: Response): Promise<void> => {
+  const userId = req.params.id;
+  try {
+    // 현재 사용 중인 약만 필터
+    const pills = await Pill.find({
+      userId,
+      isCurrentlyUsed: true,
+    }).lean();
+
+    const pillIds = pills.map(p => p._id);
+    const { start, end } = getTodayRange();
+
+    // 오늘 날짜에 복용된 약 기록 가져오기
+    const userPills = await UserPill.find({
+      pillId: { $in: pillIds },
+      intakeDateTime: { $gte: start, $lt: end },
+    }).lean();
+
+    // 각 약에 복용 여부와 시간 추가
+    const enrichedPills = pills.map(pill => {
+      const userPill = userPills.find(up => up.pillId.toString() === pill._id.toString());
+      return {
+        ...pill,
+        taken: !!userPill,
+        takenTime: userPill ? userPill.intakeDateTime : null,
+      };
+    });
+    res.status(200).json(enrichedPills);
+  } catch (err) {
+    console.error("Get Pills By UserId Error:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch today's pills" });
+  }
+};
