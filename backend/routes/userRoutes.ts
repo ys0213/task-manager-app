@@ -13,6 +13,6 @@ router.post("/login", loginUser);
 router.get("/check-username", checkUsernameExists);
 
 // GET /api/user/:id - Get user by ID
-router.get("/:id", getUserById);
+router.get("/by-id/:id", getUserById);
 
 export default router;
