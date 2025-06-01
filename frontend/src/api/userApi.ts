@@ -34,7 +34,7 @@ export interface LoginResponse {
 // ID로 유저 조회
 export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/${id}`);
+    const response = await fetch(`${API_BASE_URL}/user/by-id/${id}`);
     if (!response.ok) {
       throw new Error("Failed to fetch user");
     }
