@@ -5,9 +5,15 @@
     width: 100%;
 }
 
+.react-calendar__tile:disabled{
+    background-color: transparent !important;
+}
+
 /* 요일 제목 (일, 월, 화, ...) */
 .react-calendar__month-view__weekdays {
     color: #333333;
+    font-size: 20px !important; /* 필요 시 조절 */
+    font-weight:normal;
 }
 
 /* 날짜 숫자 (기본 타일) */
@@ -20,25 +26,29 @@
     justify-content: center;
     align-items: center;
     padding: 0 !important;
-    height: 40px; /* 또는 원하는 고정 높이 */
+    height: 60px; /* 또는 원하는 고정 높이 */
 }
 
 
 /* 네비게이션 (월 이동 화살표, 월/연도 제목 등) */
 .react-calendar__navigation {
     color: #333333;
+    font-size: 24px !important; /* 필요 시 조절 */
+    font-weight:bold;
 }
 
 .react-calendar__tile:hover {
     background-color: #B0EDCA !important; 
+    border-radius: 9999px;
 }
+
 
 /* 오늘의 날짜 스타일 */
 .react-calendar__tile--now {
   background-color: #fde68a !important; /* 연한 노랑 */
-    border-radius: 9999px;
-    font-weight: bold;
-    color: black;
+  border-radius: 9999px;
+  font-weight: bold;
+  color: black;
 }
 
 
@@ -52,10 +62,12 @@
     text-align: center;
 }
 
-/* 기본 숫자 숨기기 */
-.react-calendar__tile abbr {
+
+/* ✅ view='month'일 때만 abbr 숨기기 */
+.react-calendar__month-view__days__day abbr {
     display: none;
 }
+
 
 /* 일요일 컬러 */
 .react-calendar__month-view__weekdays__weekday:nth-child(1) abbr {
@@ -82,12 +94,27 @@
 }
 
 .react-calendar__tile--active {
-  background: transparent !important;
-  color: inherit !important;
+  background-color: #58D68D !important;
+  color: black !important;
+  border-radius: 9999px; /* rounded-full */
+  font-weight: 600; /* font-semibold */
 }
 
 .react-calendar__tile span {
-  margin: 0 !important;
-  font-size: 14px !important; /* 필요 시 조절 */
+    font-size: 20px !important; /* 필요 시 조절 */
 }
 
+.react-calendar__month-view__weekdays abbr {
+    text-decoration: none;
+    cursor: default; /* 선택 사항: 마우스 올렸을 때 손가락 커서 안 뜨게 */
+}
+
+.react-calendar__tile.future-date {
+  background-color: #f0f0f0 !important;
+  color: #aaa !important;
+  cursor: not-allowed;
+}
+
+.react-calendar__tile.future-date:hover {
+  border-radius: 0 !important;
+}

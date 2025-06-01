@@ -2,19 +2,29 @@ import React from "react";
 import pill_c from "../../assets/free-icon-pill-5405609.png";
 import pill_t from "../../assets/free-icon-tablet-7038906.png";
 
+interface PillFormData {
+    _id: string;
+    name: string;
+    description: string;
+    intakeCycle: Array<"morning" | "lunch" | "evening">;
+    time: string;
+    type: string;
+    alarm: string;
+}
+
 interface ModalFormProps {
-    formData: {
-        name: string;
-        time: string;
-        type: string;
-        description: string;
-        alarm: string;
-    };
-    onChange: (field: string, value: string) => void;
+    formData: PillFormData;
+    onChange: (field: string, value: string | string[]) => void;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
+        const handleIntakeCycleChange = (cycle: "morning" | "lunch" | "evening") => {
+        const newCycle = formData.intakeCycle.includes(cycle)
+        ? formData.intakeCycle.filter((c) => c !== cycle)
+        : [...formData.intakeCycle, cycle];
 
+        onChange("intakeCycle", newCycle);
+    };
 
     return (
         <div className="space-y-6 text-sm text-[#333]">
@@ -33,22 +43,20 @@ const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
 
         {/* 약 복용 시간 */}
         <div className="flex items-center">
-            <label className="font-bold w-24">약 복용시간</label>
+            <label className="font-bold w-24">복용 주기</label>
             <div className="flex gap-6">
-            {['08:00', '13:00', '19:00'].map((time) => (
-                <label key={time} className="flex items-center gap-1">
+            {[
+                { value: "morning", label: "아침" },
+                { value: "lunch", label: "점심" },
+                { value: "evening", label: "저녁" },
+            ].map(({ value, label }) => (
+                <label key={value} className="flex items-center gap-1">
                 <input
-                    type="radio"
-                    name="time"
-                    value={time}
-                    checked={formData.time === time}
-                    onChange={() => onChange('time', time)}
+                    type="checkbox"
+                    checked={formData.intakeCycle.includes(value as any)}
+                    onChange={() => handleIntakeCycleChange(value as any)}
                 />
-                {time === '08:00'
-                    ? '아침 08:00'
-                    : time === '13:00'
-                    ? '점심 13:00'
-                    : '저녁 19:00'}
+                {label}
                 </label>
             ))}
             </div>
