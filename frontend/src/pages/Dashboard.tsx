@@ -4,7 +4,7 @@ import  AddButton from "../components/ui/AddButton";
 import { BaseButton } from "../components/ui/BaseButton";
 import pill_c from "../assets/free-icon-pill-5405609.png";
 import pill_t from "../assets/free-icon-tablet-7038906.png";
-import { fetchPills, createPill } from "../api/pillApi";
+import { fetchPills, createPill, fetchPillsByUserID } from "../api/pillApi";
 import { useNavigate } from "react-router-dom";
 import  Modal from "../components/ui/Modal";
 import ModalForm from '../components/ui/ModalForm';
@@ -26,12 +26,15 @@ interface PillFormData {
   name: string;
   description: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
-  pillType: "pill" | "supplement";
+  isCurrentlyUsed: boolean;
   useAlarm: boolean;
+  pillType: "pill" | "supplement"; // 약 / 영양보조제
+  userId: string;
 }
 
 
 const Dashboard: React.FC = () => {
+  const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
   const [pills, setPills] = useState<Pill[]>([]);
   const [formData, setFormData] = useState<PillFormData>({
@@ -39,12 +42,13 @@ const Dashboard: React.FC = () => {
     name: "",
     description: "",
     intakeCycle: ["morning"],
-    pillType: "supplement",
+    isCurrentlyUsed: true,
     useAlarm: true,
+    pillType: "supplement",
+    userId: userId,
   });
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userId, setUserId] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
 
   // 알람 토글
@@ -53,7 +57,6 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // localStorage에서 로그인된 사용자 정보 가져오기
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -68,11 +71,13 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-      loadPills();
-    }, []);
-  
-    const loadPills = async () => {
+    useEffect(() => {
+    if (userId) {
+      loadPills(userId);
+    }    
+  }, [userId]);
+
+    const loadPills = async ( userId:string ) => {
       try {
         const data = await fetchPills();
         
@@ -95,24 +100,21 @@ const Dashboard: React.FC = () => {
 
 
     // 모달폼에서 데이터 받아오는 부분
-      const handleChange = (field: string, value: string | string[]) => {
+      const handleChange = (field: string, value: string | boolean | string[]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
       };
 
       const handleSubmit = (e: React.FormEvent) => {
-        // e.preventDefault();
-        // console.log('제출된 데이터:', formData);
-        // setIsModalOpen(false);
 
           const newPill: Pill = {
-            _id: Date.now().toString(),
+            _id: formData._id,
             name: formData.name,
             description: formData.description,
             intakeCycle: formData.intakeCycle,
             pillType: formData.pillType,
             useAlarm: formData.useAlarm,
-            isCurrentlyUsed: true,
-            userId: userId,
+            isCurrentlyUsed: formData.isCurrentlyUsed,
+            userId: formData.userId,
           };
 
           setPills((prev) => [...prev, newPill]);

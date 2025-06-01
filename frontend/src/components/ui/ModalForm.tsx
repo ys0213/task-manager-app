@@ -7,14 +7,15 @@ interface PillFormData {
     name: string;
     description: string;
     intakeCycle: Array<"morning" | "lunch" | "evening">;
-    time: string;
-    type: string;
-    alarm: string;
+    isCurrentlyUsed: boolean;
+    useAlarm: boolean;
+    pillType: "pill" | "supplement"; // 약 / 영양보조제
+    userId: string;
 }
 
 interface ModalFormProps {
     formData: PillFormData;
-    onChange: (field: string, value: string | string[]) => void;
+    onChange: (field: string, value: string | boolean | string[]) => void;
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
@@ -71,8 +72,8 @@ const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
                 type="radio"
                 name="type"
                 value="supplement"
-                checked={formData.type === 'supplement'}
-                onChange={() => onChange('type', 'supplement')}
+                checked={formData.pillType === 'supplement'}
+                onChange={() => onChange('pillType', 'supplement')}
                 />
                 <div className="flex-col flex items-center gap-1 m-1">
                     <img src={pill_c} alt="건강보조제" className="w-12" />
@@ -84,8 +85,8 @@ const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
                 type="radio"
                 name="type"
                 value="hospital"
-                checked={formData.type === 'hospital'}
-                onChange={() => onChange('type', 'hospital')}
+                checked={formData.pillType === 'pill'}
+                onChange={() => onChange('pillType', 'pill')}
                 />
                 <div className="flex-col flex items-center gap-1 m-1">
                     <img src={pill_t} alt="병원약" className="w-12" />
@@ -110,16 +111,16 @@ const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
         <div className="flex items-center">
             <label className="font-bold w-24">알람 설정</label>
             <div className="flex gap-6">
-            {['on', 'off'].map((opt) => (
-                <label key={opt} className="flex items-center gap-1">
-                <input
-                    type="radio"
-                    name="alarm"
-                    value={opt}
-                    checked={formData.alarm === opt}
-                    onChange={() => onChange('alarm', opt)}
-                />
-                {opt.toUpperCase()}
+            {[true, false].map((bool) => (
+                <label key={String(bool)} className="flex items-center gap-1">
+                    <input
+                        type="radio"
+                        name="alarm"
+                        value={String(bool)} // 문자열로 변환해서 넘김 (필수)
+                        checked={formData.useAlarm === bool}
+                        onChange={() => onChange('useAlarm', bool)}
+                    />
+                    {bool ? 'ON' : 'OFF'}
                 </label>
             ))}
             </div>

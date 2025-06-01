@@ -79,9 +79,9 @@ const Pills: React.FC = () => {
       name,
       description,
       intakeCycle,
-      isCurrentlyUsed,
-      useAlarm,
       pillType,
+      useAlarm,
+      isCurrentlyUsed,
       userId
     };
 
