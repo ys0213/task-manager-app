@@ -37,7 +37,17 @@ const Dashboard: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
   const [pills, setPills] = useState<Pill[]>([]);
-  const [formData, setFormData] = useState<PillFormData>({
+  // const [formData, setFormData] = useState<PillFormData>({
+  //   _id: "",
+  //   name: "",
+  //   description: "",
+  //   intakeCycle: ["morning"],
+  //   isCurrentlyUsed: true,
+  //   useAlarm: true,
+  //   pillType: "supplement",
+  //   userId: "",
+  // });
+  const getInitialFormData = (uid: string): PillFormData => ({
     _id: "",
     name: "",
     description: "",
@@ -45,9 +55,10 @@ const Dashboard: React.FC = () => {
     isCurrentlyUsed: true,
     useAlarm: true,
     pillType: "supplement",
-    userId: userId,
+    userId: uid,
   });
-  
+
+  const [formData, setFormData] = useState<PillFormData>(getInitialFormData(""));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -64,6 +75,7 @@ const Dashboard: React.FC = () => {
         console.log(parsed);
         if (parsed.id) {
           setUserId(parsed.id);
+          setFormData((prev) => ({ ...prev, userId: parsed.id }));
         }
       } catch (error) {
         console.error("Failed to parse user from localStorage", error);
@@ -79,7 +91,7 @@ const Dashboard: React.FC = () => {
 
     const loadPills = async ( userId:string ) => {
       try {
-        const data = await fetchPills();
+        const data = await fetchPillsByUserID(userId);
         
         // undefined인 description을 빈 문자열로 처리
         const normalized: Pill[] = data.map((p) => ({
@@ -104,21 +116,37 @@ const Dashboard: React.FC = () => {
         setFormData((prev) => ({ ...prev, [field]: value }));
       };
 
-      const handleSubmit = (e: React.FormEvent) => {
+      const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+      if (!userId) {
+        console.error("User ID is missing");
+        return;
+      }
 
           const newPill: Pill = {
             _id: formData._id,
             name: formData.name,
             description: formData.description,
             intakeCycle: formData.intakeCycle,
-            pillType: formData.pillType,
-            useAlarm: formData.useAlarm,
             isCurrentlyUsed: formData.isCurrentlyUsed,
-            userId: formData.userId,
+            useAlarm: formData.useAlarm,
+            pillType: formData.pillType,
+            userId: userId,
           };
 
-          setPills((prev) => [...prev, newPill]);
-          setIsModalOpen(false);
+          try {
+            await createPill(newPill);
+
+            setPills((prev) => [...prev, newPill]);
+
+            setFormData(getInitialFormData(userId));
+
+            setIsModalOpen(false);
+
+          } catch (error) {
+            console.error("Failed to create pill", error);
+          }
         
       };
 
