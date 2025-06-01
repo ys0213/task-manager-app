@@ -2,9 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Card } from "../components/ui/card";
 import  AddButton from "../components/ui/AddButton";
 import { BaseButton } from "../components/ui/BaseButton";
-import pill_c from "../assets/free-icon-pill-5405609.png";
-import pill_t from "../assets/free-icon-tablet-7038906.png";
-import { fetchPills, createPill, fetchPillsByUserID } from "../api/pillApi";
+import { createPill, fetchPillsByUserID, updatePill,  } from "../api/pillApi";
 import { useNavigate } from "react-router-dom";
 import  Modal from "../components/ui/Modal";
 import ModalForm from '../components/ui/ModalForm';
@@ -37,16 +35,6 @@ const Dashboard: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
   const [pills, setPills] = useState<Pill[]>([]);
-  // const [formData, setFormData] = useState<PillFormData>({
-  //   _id: "",
-  //   name: "",
-  //   description: "",
-  //   intakeCycle: ["morning"],
-  //   isCurrentlyUsed: true,
-  //   useAlarm: true,
-  //   pillType: "supplement",
-  //   userId: "",
-  // });
   const getInitialFormData = (uid: string): PillFormData => ({
     _id: "",
     name: "",
@@ -64,6 +52,10 @@ const Dashboard: React.FC = () => {
 
   // 알람 토글
   const [enabled, setEnabled] = useState<boolean>(false);
+  
+  const [editingPillId, setEditingPillId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false); // 추가
+
 
   const navigate = useNavigate();
 
@@ -110,6 +102,41 @@ const Dashboard: React.FC = () => {
       }
     };
 
+  // 새로운 약 추가 버튼 클릭 시
+  const handleAddNewClick = () => {
+    setFormData(getInitialFormData(userId));
+    setEditingPillId(null);
+    setIsEditMode(false);
+    setIsModalOpen(true);
+  };
+
+  // 수정 버튼 클릭 시
+  const handleEditClick = (pill: Pill) => {
+    setFormData({
+      _id: pill._id,
+      name: pill.name,
+      description: pill.description ?? "",
+      intakeCycle: pill.intakeCycle,
+      isCurrentlyUsed: pill.isCurrentlyUsed,
+      useAlarm: pill.useAlarm,
+      pillType: pill.pillType,
+      userId: pill.userId,
+    });
+    setEditingPillId(pill._id);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+    // // 삭제 버튼 클릭 시 (예시)
+    // const handleDeleteClick = async (pillId: string) => {
+    //   try {
+    //     await deletePill(pillId); // 삭제 API 호출 함수 필요
+    //     setPills((prev) => prev.filter((p) => p._id !== pillId));
+    //   } catch (error) {
+    //     console.error("Failed to delete pill", error);
+    //   }
+    // };
+
 
     // 모달폼에서 데이터 받아오는 부분
       const handleChange = (field: string, value: string | boolean | string[]) => {
@@ -119,35 +146,42 @@ const Dashboard: React.FC = () => {
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-      if (!userId) {
-        console.error("User ID is missing");
-        return;
-      }
+        if (!userId) {
+          console.error("User ID is missing");
+          return;
+        }
 
-          const newPill: Pill = {
-            _id: formData._id,
-            name: formData.name,
-            description: formData.description,
-            intakeCycle: formData.intakeCycle,
-            isCurrentlyUsed: formData.isCurrentlyUsed,
-            useAlarm: formData.useAlarm,
-            pillType: formData.pillType,
-            userId: userId,
-          };
+        const pillToSave: Pill = {
+          _id: formData._id,
+          name: formData.name,
+          description: formData.description,
+          intakeCycle: formData.intakeCycle,
+          isCurrentlyUsed: formData.isCurrentlyUsed,
+          useAlarm: formData.useAlarm,
+          pillType: formData.pillType,
+          userId: userId,
+        };
 
-          try {
-            await createPill(newPill);
-
-            setPills((prev) => [...prev, newPill]);
-
-            setFormData(getInitialFormData(userId));
-
-            setIsModalOpen(false);
-
-          } catch (error) {
-            console.error("Failed to create pill", error);
+        try {
+          if (isEditMode && editingPillId) {
+            // 수정 모드: update API 호출
+            await updatePill(pillToSave);
+            setPills((prev) =>
+              prev.map((p) => (p._id === editingPillId ? pillToSave : p))
+            );
+          } else if (!isEditMode) {
+            // 추가 모드: create API 호출
+            await createPill(pillToSave);
+            setPills((prev) => [...prev, pillToSave]);
           }
-        
+
+          setFormData(getInitialFormData(userId));
+          setEditingPillId(null);
+          setIsEditMode(false);
+          setIsModalOpen(false);
+        } catch (error) {
+          console.error("Failed to save pill", error);
+        }
       };
 
       const handleClickSubmit = () => {
@@ -180,21 +214,18 @@ const Dashboard: React.FC = () => {
       {/* 약 리스트 */}
       <h4 className="font-bold m-1">복용 리스트</h4>
       <div>
-          {pills.map((pill) => (
-                    <Card
-                      key={pill._id}
-                      className="mb-5 cursor-pointer"
-                      onClick={() => navigate(`/pills/${pill._id}`)}
-                    >
-                      <h4 className="font-semibold">{pill.name}</h4>
-                      <p className="text-sm">{pill.description}</p>
-                      <p className="text-sm">
-                        복용 주기: {pill.intakeCycle.join(", ")}
-                      </p>
-                      <p className="text-sm">
-                        알람: {pill.useAlarm ? "ON" : "OFF"}
-                      </p>
-                    </Card>
+        {pills.map((pill) => (
+          <Card key={pill._id} className="mb-5 cursor-pointer">
+            <h4 className="font-semibold">{pill.name}</h4>
+            <p className="text-sm">{pill.description}</p>
+            <p className="text-sm">복용 주기: {pill.intakeCycle.join(", ")}</p>
+            <p className="text-sm">알람: {pill.useAlarm ? "ON" : "OFF"}</p>
+
+            <div className="mt-2 flex space-x-2">
+              <BaseButton onClick={() => handleEditClick(pill)}>수정</BaseButton>
+              {/* <BaseButton onClick={() => handleDeleteClick(pill._id)}>삭제</BaseButton> */}
+            </div>
+          </Card>
         ))}
       </div>
     </div>

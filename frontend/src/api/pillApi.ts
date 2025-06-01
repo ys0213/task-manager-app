@@ -2,7 +2,19 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api"
 
 console.log("API BASE URL:", import.meta.env.VITE_API_URL);
 
+interface Pill {
+  _id: string;
+  name: string;
+  description?: string;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
+  isCurrentlyUsed: boolean;
+  useAlarm: boolean;
+  pillType: "pill" | "supplement";
+  userId: string;
+}
+
 export interface PillData {
+  _id: string;
   name: string;
   description?: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
@@ -86,5 +98,45 @@ export const homeUserPills = async (userId: string): Promise<PillResponse[]> => 
   } catch (err) {
     console.error(err);
     return [];
+  }
+};
+
+// 수정하기
+export const updatePill = async (Pill: Pill ): Promise<PillResponse | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/${Pill._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(Pill),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update pill");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+// 삭제하기
+export const deletePill = async (pillId: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/${pillId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete pill");
+    }
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
   }
 };
