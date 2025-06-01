@@ -68,5 +68,8 @@ input{
 textarea{
   background-color: rgba(117, 117, 117, 0.87);
 }
+select{
+  background-color: rgba(117, 117, 117, 0.87);
+}
 
 
