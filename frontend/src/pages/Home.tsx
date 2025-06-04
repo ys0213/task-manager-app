@@ -48,9 +48,11 @@ const Home: React.FC = () => {
         const todayDate = new Date().toISOString().split("T")[0];
 
         res.forEach((pill: any) => {
+
         if (pill.isCurrentlyUsed === false) return;
 
-        const icon = pill.pillType === "pill" ? pill_c : pill_t;
+        const icon = pill.pillType === "pill" ? pill_t : pill_c;
+
 
         const takenMap: Record<IntakeTime, string | undefined> = {
             morning: undefined,

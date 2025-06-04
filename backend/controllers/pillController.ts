@@ -230,3 +230,52 @@ export const cancelPillIntake = async (req: Request, res: Response): Promise<voi
     res.status(500).json({ message: "서버 오류" });
   }
 };
+
+export const getUserPillRecordsByDate = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { date } = req.query;
+
+  if (!userId || !date) {
+    res.status(400).json({ message: "userId와 date는 필수입니다." });
+  }
+  
+  try {
+    const [year, month, day] = (date as string).split("-").map(Number);
+
+    const startDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    const endDate = new Date(year, month - 1, day, 23, 59, 59, 999);
+    const records = await UserPill.aggregate([
+      {
+        $match: {
+          intakeDateTime: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $lookup: {
+          from: "pills",
+          localField: "pillId",
+          foreignField: "_id",
+          as: "pillDetails",
+        },
+      },
+      { $unwind: "$pillDetails" },
+      {
+        $match: {
+          "pillDetails.userId": new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $project: {
+          intakeDateTime: 1,
+          intakeTime: 1,
+          name: "$pillDetails.name",
+          pillType: "$pillDetails.pillType"
+        },
+      },
+    ]);
+    res.status(200).json(records);
+  } catch (err) {
+    console.error("복용 기록 조회 에러:", err);
+    res.status(500).json({ message: "복용 기록 조회 실패" });
+  }
+};

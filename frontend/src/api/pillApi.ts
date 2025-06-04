@@ -125,6 +125,7 @@ export const updatePill = async (Pill: Pill ): Promise<PillResponse | null> => {
 
 export type IntakeTime = "morning" | "lunch" | "evening";
 
+//유저 홈 오늘의 약 복용 기록
 export const recordPillIntake = async (pillId: string, intakeTime: IntakeTime): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/pills/record`, {
@@ -145,6 +146,7 @@ export const recordPillIntake = async (pillId: string, intakeTime: IntakeTime): 
   }
 };
 
+//유저 홈 오늘의 약 복용 취소
 export const cancelPillIntake = async (pillId: string, intakeTime: IntakeTime): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/pills/cancel`, {
@@ -162,5 +164,29 @@ export const cancelPillIntake = async (pillId: string, intakeTime: IntakeTime): 
   } catch (err) {
     console.error("복용 취소 에러:", err);
     throw err;
+  }
+};
+
+// 캘린더용 데이터
+export interface PillRecord {
+  pillId: string;
+  name: string;
+  intakeTime: string;
+  pillType: "pill" | "supplement";
+  intakeDateTime: string;
+}
+export const fetchUserPillRecords = async (
+  userId: string,
+  date: string
+): Promise<PillRecord[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/records/${userId}?date=${date}`);
+    if (!response.ok) {
+      throw new Error("복용 기록을 불러오지 못했습니다");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error("fetchUserPillRecords 에러:", err);
+    return [];
   }
 };
