@@ -10,6 +10,7 @@ export function Button({ children, onClick, className = '', ...props }: ButtonPr
     <button
       onClick={onClick}
         className={`
+        cursor-pointer
         inline-block 
         rounded-full 
         p-5

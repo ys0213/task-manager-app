@@ -1,5 +1,4 @@
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Plus } from 'lucide-react';
 
 interface AddButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
@@ -11,7 +10,6 @@ const AddButton = ({
     children,
     onClick,
     className = '',
-    showPlusIcon = false,
     ...props
 }: AddButtonProps) => {
     return (
@@ -28,11 +26,11 @@ const AddButton = ({
             transition 
             duration-150
             w-full
+            cursor-pointer
             ${className}
         `}
         {...props}
         >
-        {showPlusIcon && <Plus size={16} strokeWidth={2} />}
         {children}
         </button>
     );

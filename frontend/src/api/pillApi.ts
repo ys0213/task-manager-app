@@ -65,7 +65,7 @@ export const fetchPillsByUserID = async (userId: string): Promise<PillResponse[]
   }
 };
 
-// 생성하기
+// 새로운 약 추가로 생성하기
 export const createPill = async (pillData: PillData): Promise<PillResponse | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/pills`, {
@@ -122,24 +122,6 @@ export const updatePill = async (Pill: Pill ): Promise<PillResponse | null> => {
     return null;
   }
 };
-
-// 삭제하기
-export const deletePill = async (pillId: string): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/pills/${pillId}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to delete pill");
-    }
-
-    return true;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
 
 export type IntakeTime = "morning" | "lunch" | "evening";
 

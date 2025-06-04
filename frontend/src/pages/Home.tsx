@@ -48,6 +48,8 @@ const Home: React.FC = () => {
         const todayDate = new Date().toISOString().split("T")[0];
 
         res.forEach((pill: any) => {
+        if (pill.isCurrentlyUsed === false) return;
+
         const icon = pill.pillType === "pill" ? pill_c : pill_t;
 
         const takenMap: Record<IntakeTime, string | undefined> = {
@@ -126,7 +128,8 @@ const Home: React.FC = () => {
 
   return (
     <div className="px-4 w-full">
-      <div className="flex justify-center mb-4">
+      <h4 className="font-bold mb-10">오늘의 톡톡!</h4>
+      <div className="flex justify-center mb-10">
         <img src={pillIcon} alt="약 캐릭터" className="w-40" />
         <div className="flex bg-[#F9E79F] rounded-[50px] px-6 py-4 m-5 items-center">
           <div className="flex m-4">
@@ -140,40 +143,46 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <h4 className="font-bold m-1">오늘의 톡톡!</h4>
-
       {pillCards.length === 0 ? (
         <div className="text-center mt-8 text-gray-500">
           오늘 복용할 약이 없습니다.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {pillCards.map((pill) => (
-            <Card
-              key={pill.id}
-              className={`h-[100px] flex items-center justify-between px-6 rounded-lg transition-opacity duration-300 ${
-                pill.taken ? "opacity-50 border-gray-300 shadow-inner" : "opacity-100"
-              }`}
-            >
-              <div className="flex-shrink-0 m-1">
-                <img src={pill.icon} alt="약 아이콘" className="w-12" />
+      <>
+        {(["morning", "lunch", "evening"] as IntakeTime[]).map((time) => {
+          const filtered = pillCards.filter((pill) => pill.intakeTime === time);
+          if (filtered.length === 0) return null;
+
+          return (
+            <div key={time} className="mb-6">
+              <h4 className="font-bold mb-4">{intakeTimeLabels[time]}</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filtered.map((pill) => (
+                  <Card
+                    key={pill.id}
+                    className={`h-[100px] flex items-center justify-between px-6 rounded-lg transition-opacity duration-300 ${
+                      pill.taken ? "opacity-50 border-gray-300 shadow-inner" : "opacity-100"
+                    }`}
+                  >
+                    <div className="flex-shrink-0 m-1">
+                      <img src={pill.icon} alt="약 아이콘" className="w-12" />
+                    </div>
+                    <div className="flex flex-col items-start justify-center ml-4 flex-grow">
+                      <h4 className="font-semibold">{pill.name}</h4>
+                      <h6>{intakeTimeLabels[pill.intakeTime]}</h6>
+                    </div>
+                    <div className="flex gap-2">
+                      <BaseButton onClick={() => handleToggle(pill)}>
+                        {pill.taken ? "복용 취소" : "복용 기록"}
+                      </BaseButton>
+                    </div>
+                  </Card>
+                ))}
               </div>
-              <div className="flex flex-col items-start justify-center ml-4 flex-grow">
-                <h4 className="font-semibold">{pill.name}</h4>
-                <h6>
-                  {pill.taken
-                    ? `${intakeTimeLabels[pill.intakeTime]}`
-                    : `${intakeTimeLabels[pill.intakeTime]}`}
-                </h6>
-              </div>
-              <div className="flex gap-2">
-                <BaseButton onClick={() => handleToggle(pill)}>
-                  {pill.taken ? "복용 취소" : "복용 기록"}
-                </BaseButton>
-              </div>
-            </Card>
-          ))}
-        </div>
+            </div>
+          );
+        })}
+      </>
       )}
     </div>
   );

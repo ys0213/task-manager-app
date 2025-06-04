@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 // import { Menu } from "lucide-react";
 import YakTokLogo from '../assets/YakTok_logo.png';
 import { Home, Bell , Calendar, Pill , Settings, ShieldUser, KeyRound } from 'lucide-react';
@@ -62,7 +62,12 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
         <Link to="/mypage" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
             <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
-            <span>설정</span>
+            <span>마이페이지</span>
+        </Link>
+        <Link to="/NotFound" onClick={onClick} 
+        className={`${baseMenuClass} ${currentPath === "/NotFound" ? activeClass : ""}`}>
+            <span className="p-2"><ShieldUser className="w-6 h-6 text-[#333333]" /></span>
+            <span>not found page</span>
         </Link>
         {user&&user.role === "admin" && (
         <Link to="/adminBase" onClick={onClick} 
@@ -93,6 +98,8 @@ const Layout = () => {
     }
     }, []);
 
+    const navigate = useNavigate();
+
     return (
     <div className="min-h-screen bg-white flex justify-center px-[calc(100%/12)] ">
         {/* 10그리드 중앙 콘텐츠 (양쪽 1그리드 마진) */}
@@ -107,7 +114,9 @@ const Layout = () => {
                 </h1>
                 {/* User profile and notification 7그리드 */}
                 <div className="flex w-full max-w-screen-md px-5 pb-2 justify-end">
-                    <div>{user && <h5 className="m-0">{user.name}</h5>}</div>
+                    <div onClick={() => navigate("/mypage")}
+                    className="cursor-pointer hover:font-bold">
+                    {user && <h5 className="m-0">{user.name}</h5>}</div>
                     <div className="ml-4"><Bell className="w-6 h-6 text-[#58D68D]"></Bell></div>
                 </div>
             </header>

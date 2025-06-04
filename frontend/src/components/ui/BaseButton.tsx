@@ -3,6 +3,8 @@ import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 interface BaseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
     className?: string;
+    // label: string;
+    // icon: string;
 }
 
 export function BaseButton({ children, onClick, className = '', ...props }: BaseButtonProps) {
@@ -10,6 +12,7 @@ export function BaseButton({ children, onClick, className = '', ...props }: Base
         <button
         onClick={onClick}
             className={`
+            cursor-pointer
             inline-block 
             rounded-full 
             p-5
