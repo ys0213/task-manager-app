@@ -13,6 +13,30 @@ export interface UserResponse {
   gender: string;
 }
 
+interface Pill {
+  _id: string;
+  name: string;
+  description?: string;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
+  isCurrentlyUsed: boolean;
+  useAlarm: boolean;
+  pillType: "pill" | "supplement";
+  userId: string;
+}
+
+export interface PillResponse {
+  _id: string;
+  name: string;
+  description?: string;
+  intakeCycle: Array<"morning" | "lunch" | "evening">;
+  isCurrentlyUsed: boolean;
+  useAlarm: boolean;
+  pillType: "pill" | "supplement";
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const fetchUsers = async (): Promise<UserResponse[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/admin/users`);
@@ -75,3 +99,41 @@ export const updateUser = async (
     return null;
   }
 };
+
+// 전체 가져오기
+export const fetchPills = async (): Promise<PillResponse[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch pills");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+// 수정하기
+export const updatePill = async ( id: string, Pill: Pill ): Promise<PillResponse | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pills/${Pill._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(Pill),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update pill");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+

@@ -43,9 +43,14 @@ const AdminBase = () => {
     <div>
       <h3 className="text-1xl font-bold">This Page is only for administrators.</h3>
       <br />
+      <div>
       <Link to="/admin/users">
         <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Users</span>
       </Link>
+      <Link to="/admin/pills">
+        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Users</span>
+      </Link>
+      </div>
       <br /><br />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-3">

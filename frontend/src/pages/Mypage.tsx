@@ -56,7 +56,7 @@ const Mypage = () => {
                 <div className="text-sm text-gray-700">여성 · 32세</div>
             </div>
             </div>
-            <button className="bg-green-200 text-sm font-semibold text-gray-700 px-4 py-1 rounded-full hover:bg-green-300 transition">
+            <button className="bg-green-200 text-sm font-semibold text-gray-700 px-6 py-3 rounded-full hover:bg-green-300 transition">
             수정
             </button>
         </div>

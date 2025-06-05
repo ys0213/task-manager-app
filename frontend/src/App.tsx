@@ -13,6 +13,7 @@ import Mypage from './pages/Mypage';
 import PillsCalendar from './pages/PillsCalendar';
 import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
+import AdminPills from './pages/AdminPills';
 
 console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="pills/:id" element={<PillDetail />} />
         <Route path="adminBase" element={<AdminBase />} />
         <Route path="admin/users" element={<AdminUsers />} />
+        <Route path="admin/pills" element={<AdminPills />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

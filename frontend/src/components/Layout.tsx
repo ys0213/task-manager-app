@@ -118,8 +118,7 @@ const Layout = () => {
                     className="cursor-pointer hover:font-bold">
                     {user && <h5 className="m-0">{user.name}</h5>}</div>
                     <div className="ml-4"><Bell className="w-6 h-6 text-[#58D68D]"></Bell></div>
-                    <div>{user && <h5 className="m-0">{user.name}</h5>}</div>
-                    <div className="ml-4">{user && <Bell className="w-6 h-6 text-[#58D68D]"></Bell>}</div>                </div>
+                    </div>
             </header>
 
             <main className="flex w-full justify-center">
