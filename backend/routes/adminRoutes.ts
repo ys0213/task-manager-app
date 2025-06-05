@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUsers, getUserById, userChartMolthly, activeUserCount, updateUserById } from "../controllers/adminController";
+import { getAllUsers, getUserById, userChartMolthly, activeUserCount, updateUserById, getAllPills, getPillById, updatePillsById  } from "../controllers/adminController";
 
 const router = express.Router();
 
@@ -14,5 +14,11 @@ router.put("/userUpdate/:id", updateUserById);
 router.get("/user-stats/monthly", userChartMolthly);
 
 router.get("/user-stats/count", activeUserCount);
+
+router.get("/pills", getAllPills);
+
+router.get("/pill/:id", getPillById);
+
+router.put("/pillUpdate/:id", updatePillsById);
 
 export default router;

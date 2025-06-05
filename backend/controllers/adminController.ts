@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/User";
+import Pill from "../models/Pill";
 
 // Get user by ID
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
@@ -120,6 +121,91 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
       joinDate: updatedUser.joinDate,
       birthDate: updatedUser.birthDate,
       gender: updatedUser.gender,
+    });
+  } catch (err) {
+    console.error("Update User Error:", err);
+    res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+// Get Pills by ID
+export const getPillById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pill = await Pill.findById(req.params.id);
+    if (!Pill) {
+      res.status(404).json({ message: "Pill not found" });
+      return;
+    }
+
+    res.status(200).json(Pill);
+  } catch (err) {
+    console.error("Get Pill Error:", err);
+    res.status(500).json({ message: "Failed to fetch Pill" });
+  }
+};
+
+// Get all Pills
+export const getAllPills = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const Pills = await Pill.find().select("-password");
+    const formattedUsers = Pills.map(Pill => ({
+      id: (Pill as any)._id.toString(),
+      name: Pill.name,
+      description: Pill.description,
+      intakeCycle: Pill.intakeCycle,
+      isCurrentlyUsed: Pill.isCurrentlyUsed,
+      useAlarm: Pill.useAlarm,
+      pillType: Pill.pillType,
+      userId: Pill.userId,
+      createdAt: Pill.createdAt,
+      updatedAt: Pill.updatedAt
+    }));
+    res.status(200).json(formattedUsers);
+  } catch (err) {
+    console.error("Get All Users Error:", err);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};
+
+
+export const updatePillsById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    // 업데이트할 필드를 req.body에서 추출
+    const updateFields = {
+      id: req.body.id,
+      name: req.body.name,
+      description: req.body.description,
+      intakeCycle: req.body.intakeCycle,
+      isCurrentlyUsed: req.body.isCurrentlyUsed,
+      useAlarm: req.body.useAlarm,
+      pillType: req.body.pillType,
+      userId: req.body.userId,
+      createdAt: req.body.createdAt,
+      updatedAt: req.body.updatedAt
+    };
+
+    // 해당 유저를 찾아서 업데이트
+    const updatedPill = await Pill.findByIdAndUpdate(id, updateFields, {
+      new: true, // 업데이트 후의 문서를 반환
+      runValidators: true, // 모델의 유효성 검사 적용
+    })
+    if (!updatedPill) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      id: updatedPill.id,
+      name: updatedPill.name,
+      description: updatedPill.description,
+      intakeCycle: updatedPill.intakeCycle,
+      isCurrentlyUsed: updatedPill.isCurrentlyUsed,
+      useAlarm: updatedPill.useAlarm,
+      pillType: updatedPill.pillType,
+      userId: updatedPill.userId,
+      createdAt: updatedPill.createdAt,
+      updatedAt: updatedPill.updatedAt
     });
   } catch (err) {
     console.error("Update User Error:", err);
