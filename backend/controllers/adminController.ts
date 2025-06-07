@@ -147,8 +147,8 @@ export const getPillById = async (req: Request, res: Response): Promise<void> =>
 // Get all Pills
 export const getAllPills = async (req: Request, res: Response): Promise<void> => {
   try {
-    const Pills = await Pill.find().select("-password");
-    const formattedUsers = Pills.map(Pill => ({
+    const Pills = await Pill.find();
+    const formattedPills = Pills.map(Pill => ({
       id: (Pill as any)._id.toString(),
       name: Pill.name,
       description: Pill.description,
@@ -160,7 +160,7 @@ export const getAllPills = async (req: Request, res: Response): Promise<void> =>
       createdAt: Pill.createdAt,
       updatedAt: Pill.updatedAt
     }));
-    res.status(200).json(formattedUsers);
+    res.status(200).json(formattedPills);
   } catch (err) {
     console.error("Get All Users Error:", err);
     res.status(500).json({ message: "Failed to fetch users" });
@@ -173,40 +173,25 @@ export const updatePillsById = async (req: Request, res: Response): Promise<void
     const { id } = req.params;
     // 업데이트할 필드를 req.body에서 추출
     const updateFields = {
-      id: req.body.id,
       name: req.body.name,
       description: req.body.description,
       intakeCycle: req.body.intakeCycle,
       isCurrentlyUsed: req.body.isCurrentlyUsed,
       useAlarm: req.body.useAlarm,
-      pillType: req.body.pillType,
-      userId: req.body.userId,
-      createdAt: req.body.createdAt,
-      updatedAt: req.body.updatedAt
+      pillType: req.body.pillType
     };
-
-    // 해당 유저를 찾아서 업데이트
-    const updatedPill = await Pill.findByIdAndUpdate(id, updateFields, {
-      new: true, // 업데이트 후의 문서를 반환
-      runValidators: true, // 모델의 유효성 검사 적용
-    })
+    // 해당 약을 찾아서 업데이트
+    const updatedPill = await Pill.findOneAndUpdate(
+      { _id: id },
+      updateFields,
+      { new: true, runValidators: true }
+    );
     if (!updatedPill) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "Pill not found" });
       return;
     }
 
-    res.status(200).json({
-      id: updatedPill.id,
-      name: updatedPill.name,
-      description: updatedPill.description,
-      intakeCycle: updatedPill.intakeCycle,
-      isCurrentlyUsed: updatedPill.isCurrentlyUsed,
-      useAlarm: updatedPill.useAlarm,
-      pillType: updatedPill.pillType,
-      userId: updatedPill.userId,
-      createdAt: updatedPill.createdAt,
-      updatedAt: updatedPill.updatedAt
-    });
+    res.status(200).json(updatedPill);
   } catch (err) {
     console.error("Update User Error:", err);
     res.status(500).json({ message: "Failed to update user" });

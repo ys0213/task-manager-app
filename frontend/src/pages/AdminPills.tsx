@@ -3,7 +3,7 @@ import { fetchPills, updatePill } from "../api/adminApi"; // API
 import PillDetailModal from "./AdminPillModal"; // 모달 컴포넌트
 
 interface Pill {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
@@ -46,7 +46,7 @@ const AdminPills: React.FC = () => {
 
   const handleSavePill = async (updatedPill: Pill) => {
     try {
-      const result = await updatePill(updatedPill._id, updatedPill);
+      const result = await updatePill(updatedPill.id, updatedPill);
       if (result) {
         await loadPills();
         setIsModalOpen(false);
@@ -61,7 +61,7 @@ const AdminPills: React.FC = () => {
 
   const filteredPills = pills
     .filter(pill =>
-      pill.userId.toLowerCase().includes(searchTerm.toLowerCase())
+      pill.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter(pill => {
       if (filterUse === "used") return pill.isCurrentlyUsed;
@@ -87,7 +87,7 @@ const AdminPills: React.FC = () => {
       <div className="flex flex-wrap gap-4 mb-6">
         <input
           type="text"
-          placeholder="사용자 ID 검색"
+          placeholder="약 이름 검색"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border rounded p-2 w-full max-w-xs bg-white text-black"
@@ -128,12 +128,12 @@ const AdminPills: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPills.map((pill) => (
           <div
-            key={pill._id}
+            key={pill.id}
             className="bg-white shadow rounded p-4 cursor-pointer hover:shadow-md transition"
             onClick={() => handlePillClick(pill)}
           >
             <h3 className="text-lg font-semibold">{pill.name}</h3>
-            <p className="text-sm text-gray-600">사용자 ID: {pill.userId}</p>
+            {/* <p className="text-sm text-gray-600">사용자 ID: {pill.userId}</p> */}
             <p className="text-sm text-gray-600">복용 시간: {pill.intakeCycle.join(", ")}</p>
             <p className="text-sm text-gray-600">
               종류: {pill.pillType === "pill" ? "약" : "영양보조제"}

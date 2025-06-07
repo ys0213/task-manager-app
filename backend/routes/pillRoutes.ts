@@ -1,5 +1,5 @@
 import express from "express";
-import { createPill, getAllPills, getPillsByUserID, getPillById, getTodayPillsByUser, recordPillIntake, cancelPillIntake, getUserPillRecordsByDate } from "../controllers/pillController";
+import { createPill, getAllPills, getPillsByUserID, getPillById, updatePillById, getTodayPillsByUser, recordPillIntake, cancelPillIntake, getUserPillRecordsByDate } from "../controllers/pillController";
 
 const router = express.Router();
 
@@ -20,6 +20,9 @@ router.get("/records/:userId", getUserPillRecordsByDate);
 
 // GET /api/pills/:id → Get pill by ID
 router.get("/:id", getPillById);
+
+// PUT /api/pills/:id → Get pill by ID
+router.put("/:id", updatePillById);
 
 //Home
 router.post("/record", recordPillIntake);

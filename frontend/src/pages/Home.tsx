@@ -171,7 +171,7 @@ const Home: React.FC = () => {
                     </div>
                     <div className="flex flex-col items-start justify-center ml-4 flex-grow">
                       <h4 className="font-semibold">{pill.name}</h4>
-                      <h6>{intakeTimeLabels[pill.intakeTime]}</h6>
+                      {/* <h6>{intakeTimeLabels[pill.intakeTime]}</h6> */}
                     </div>
                     <div className="flex gap-2">
                       <BaseButton onClick={() => handleToggle(pill)}>

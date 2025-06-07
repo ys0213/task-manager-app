@@ -28,7 +28,6 @@ const PillStatsCards: React.FC = () => {
         data.forEach((pill) => {
           userPillMap.set(pill.userId, (userPillMap.get(pill.userId) || 0) + 1);
         });
-        console.log(userPillMap);
         const userCount = userPillMap.size;
         const avg = userCount ? data.length / userCount : 0;
         setAveragePerUser(parseFloat(avg.toFixed(1))); // 소수점 1자리

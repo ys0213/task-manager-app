@@ -66,7 +66,6 @@ const Dashboard: React.FC = () => {
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        console.log(parsed);
         if (parsed.id) {
           setUserId(parsed.id);
           setFormData((prev) => ({ ...prev, userId: parsed.id }));

@@ -12,6 +12,7 @@ const app: Application = express();
 const PORT: number = parseInt(process.env.PORT ?? "5000", 10);
 
 const allowedOrigins = [
+  "http://localhost:5000",
   "http://localhost:5173",
   "https://ys0213.github.io"
 ];

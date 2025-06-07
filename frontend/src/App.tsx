@@ -15,8 +15,6 @@ import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
 import AdminPills from './pages/AdminPills';
 
-console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
-
 function App() {
   console.log("API_BASE_URL", import.meta.env.VITE_API_URL);
   return (

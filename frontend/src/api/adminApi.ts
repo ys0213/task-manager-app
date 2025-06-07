@@ -1,7 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-console.log("API BASE URL:", import.meta.env.VITE_API_URL);
-
 export interface UserResponse {
   id: string; //DB system id
   username: string; // user login id
@@ -14,7 +12,7 @@ export interface UserResponse {
 }
 
 interface Pill {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
@@ -25,7 +23,7 @@ interface Pill {
 }
 
 export interface PillResponse {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
@@ -103,7 +101,7 @@ export const updateUser = async (
 // 전체 가져오기
 export const fetchPills = async (): Promise<PillResponse[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/pills`);
+    const response = await fetch(`${API_BASE_URL}/admin/pills`);
     if (!response.ok) {
       throw new Error("Failed to fetch pills");
     }
@@ -117,7 +115,7 @@ export const fetchPills = async (): Promise<PillResponse[]> => {
 // 수정하기
 export const updatePill = async ( id: string, Pill: Pill ): Promise<PillResponse | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/pills/${Pill._id}`, {
+    const response = await fetch(`${API_BASE_URL}/admin/pillUpdate/${Pill.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

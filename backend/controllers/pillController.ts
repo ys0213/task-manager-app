@@ -53,8 +53,12 @@ export const getAllPills = async (req: Request, res: Response): Promise<void> =>
 // Get pills by user id
 export const getPillsByUserID = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400).json({ message: "Invalid userId format" });
+    return;
+  }
   try {
-    const pills = await Pill.find({ userId }).lean();
+    const pills = await Pill.find({ userId: new mongoose.Types.ObjectId(userId) }).lean();
     res.status(200).json(pills);
   } catch (err) {
     console.error("Get Pills By UserId Error:", err);
@@ -76,7 +80,6 @@ export const getPillById = async (req: Request, res: Response): Promise<void> =>
 
     // 2. 관련된 UserPill 데이터 조회
     const userPills = await UserPill.find({ pillId: pill._id }).lean();
-    console.log(userPills);
     // 3. 함께 응답
     res.status(200).json({
       pill,
@@ -85,6 +88,37 @@ export const getPillById = async (req: Request, res: Response): Promise<void> =>
     });
   } catch (err) {
     console.error("Get Pill Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const updatePillById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    // 업데이트할 필드를 req.body에서 추출
+    const updateFields = {
+      name: req.body.name,
+      description: req.body.description,
+      intakeCycle: req.body.intakeCycle,
+      isCurrentlyUsed: req.body.isCurrentlyUsed,
+      useAlarm: req.body.useAlarm,
+      pillType: req.body.pillType
+    };
+    console.log(updateFields);
+    // 해당 약을 찾아서 업데이트
+    const updatedPill = await Pill.findOneAndUpdate(
+      { _id: id },
+      updateFields,
+      { new: true, runValidators: true }
+    );
+    if (!updatedPill) {
+      res.status(404).json({ message: "Pill not found" });
+      return;
+    }
+    res.status(200).json({updatedPill});
+  } catch (err) {
+    console.error("Update Pill Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -101,14 +135,18 @@ const getTodayRange = () => {
 //Get today's pill by userID
 export const getTodayPillsByUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400).json({ message: "Invalid userId format" });
+    return;
+  }
   try {
     // 현재 사용 중인 약만 필터
     const pills = await Pill.find({
-      userId,
+      userId: new mongoose.Types.ObjectId(userId),
       isCurrentlyUsed: true,
     }).lean();
 
-    const pillIds = pills.map(p => p._id);
+    const pillIds = pills.map(p => new mongoose.Types.ObjectId(p._id));
     const { start, end } = getTodayRange();
 
     // 오늘 날짜에 복용된 약 기록 가져오기

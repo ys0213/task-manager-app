@@ -48,7 +48,7 @@ const AdminBase = () => {
         <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Users</span>
       </Link>
       <Link to="/admin/pills">
-        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Users</span>
+        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Pills</span>
       </Link>
       </div>
       <br /><br />

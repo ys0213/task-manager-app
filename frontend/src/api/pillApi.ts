@@ -1,7 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-console.log("API BASE URL:", import.meta.env.VITE_API_URL);
-
 interface Pill {
   _id: string;
   name: string;
@@ -14,7 +12,7 @@ interface Pill {
 }
 
 export interface PillData {
-  _id: string;
+  // _id: string;
   name: string;
   description?: string;
   intakeCycle: Array<"morning" | "lunch" | "evening">;
@@ -104,6 +102,7 @@ export const homeUserPills = async (userId: string): Promise<PillResponse[]> => 
 // 수정하기
 export const updatePill = async (Pill: Pill ): Promise<PillResponse | null> => {
   try {
+    console.log(Pill._id);
     const response = await fetch(`${API_BASE_URL}/pills/${Pill._id}`, {
       method: "PUT",
       headers: {

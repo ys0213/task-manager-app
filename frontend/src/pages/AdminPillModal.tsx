@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 type IntakeTime = "morning" | "lunch" | "evening";
 
 interface Pill {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   intakeCycle: IntakeTime[];
@@ -140,10 +140,10 @@ const PillDetailModal: React.FC<Props> = ({ isOpen, onClose, pill, onSave }) => 
           </select>
         </div>
 
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium">사용자 ID</label>
           <p className="text-gray-700">{editPill.userId}</p>
-        </div>
+        </div> */}
 
         <div className="flex justify-end gap-2 mt-4">
           <button onClick={onClose} className="px-4 py-2 bg-gray-400 rounded text-white">취소</button>
