@@ -29,6 +29,14 @@ export interface LoginResponse {
   role: string;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  username: string;
+  role: string;
+  alarmPill: boolean;
+}
+
 // ID로 유저 조회
 export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
@@ -94,3 +102,24 @@ export async function checkUsernameExists(username: string): Promise<boolean> {
   const data = await res.json();
   return data.exists;
 }
+
+export const fetchUserWithAlarm = async (userId: string): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/user/${userId}/alarm-pill`);
+  if (!response.ok) {
+    throw new Error("유저 알람 정보를 불러오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) {
+    throw new Error("로컬 스토리지에 유저 정보가 없습니다.");
+  }
+  const parsed = JSON.parse(storedUser);
+  return {
+    id: parsed.id,
+    name: parsed.name,
+    username: parsed.username,
+    role: parsed.role,
+    alarmPill: data.alarmPill || false,
+  };
+};
