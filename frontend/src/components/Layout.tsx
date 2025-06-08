@@ -65,11 +65,6 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
             <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
             <span>마이페이지</span>
         </Link>
-        <Link to="/NotFound" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/NotFound" ? activeClass : ""}`}>
-            <span className="p-2"><ShieldUser className="w-6 h-6 text-[#333333]" /></span>
-            <span>not found page</span>
-        </Link>
         {user&&user.role === "admin" && (
         <Link to="/adminBase" onClick={onClick} 
         className={`${baseMenuClass} ${currentPath === "/adminBase" ? activeClass : ""}`}>
