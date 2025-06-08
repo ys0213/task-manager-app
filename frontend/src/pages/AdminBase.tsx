@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MonthlyUserChart from "./charts/MonthlyUserChart";
 import ActiveUserPieChart from "./charts/ActiveUserPieChart";
 import PillStatsCards from "./charts/PillStatsCards";
-import { Users } from 'lucide-react';
+import { Users, Pill } from 'lucide-react';
 
 interface User {
   name: string;
@@ -45,10 +45,10 @@ const AdminBase = () => {
       <br />
       <div>
       <Link to="/admin/users">
-        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Users</span>
+        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700 mr-2"><Users className="w-6 h-6 text-[#333333] mr-2" />Users</span>
       </Link>
       <Link to="/admin/pills">
-        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700"><Users className="w-6 h-6 text-[#333333]" />Pills</span>
+        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-5 py-0.5 text-emerald-700 mr-2"><Pill className="w-6 h-6 text-[#333333] mr-2" />Pills</span>
       </Link>
       </div>
       <br /><br />
