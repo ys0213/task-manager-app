@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import  MiniGame from "./MiniGame";
+import  SnakePillGame from "./Game_Snake";
+
 
 const Base = () => {
   // const [user, setUser] = useState<string | null>(null);
@@ -33,7 +34,7 @@ const Base = () => {
       >
         로그인하러 가기
       </Button>
-      <MiniGame />
+      <SnakePillGame />
     </div>
   );
 };
