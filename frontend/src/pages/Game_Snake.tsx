@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Pill as PillIcon } from "lucide-react";
 
 const CELL_SIZE = 30;
-const BOARD_WIDTH = 10;
+const BOARD_WIDTH = 20; // 가로 폭 2배로
 const BOARD_HEIGHT = 16;
-const INITIAL_SNAKE = [{ x: 5, y: 8 }];
+const INITIAL_SNAKE = [{ x: 10, y: 8 }];
 
 type Position = { x: number; y: number };
 
@@ -102,25 +102,26 @@ export default function SnakePillGame() {
   }, [direction, gameStarted]);
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto" }}>
-      <h2>약 먹기 게임</h2>
-      <button
-        onClick={startGame}
-        style={{
-          padding: "8px 16px",
-          fontSize: 16,
-          cursor: "pointer",
-          backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
-          borderRadius: 4,
-          marginBottom: 12,
-        }}
-      >
-        {gameStarted ? "재시작" : "게임 시작"}
-      </button>
-
-      <div>점수: {score}</div>
+    <div style={{ maxWidth: BOARD_WIDTH * CELL_SIZE + 40, margin: "auto" }}>
+      <h2 style={{ textAlign: "left" }}>약 먹기 게임</h2>
+      <div style={{ textAlign: "left", marginBottom: 12 }}>
+        <button
+          onClick={startGame}
+          style={{
+            padding: "8px 16px",
+            fontSize: 16,
+            cursor: "pointer",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: 4,
+            marginRight: 8,
+          }}
+        >
+          {gameStarted ? "재시작" : "게임 시작"}
+        </button>
+        <span style={{ fontWeight: "bold" }}>점수: {score}</span>
+      </div>
 
       <div
         style={{
@@ -128,7 +129,6 @@ export default function SnakePillGame() {
           width: BOARD_WIDTH * CELL_SIZE,
           height: BOARD_HEIGHT * CELL_SIZE,
           border: "2px solid #333",
-          marginTop: 16,
           background: "#f4f4f4",
         }}
       >
@@ -170,7 +170,7 @@ export default function SnakePillGame() {
         <p style={{ color: "#dc3545", marginTop: 8 }}>게임 종료! 최종 점수: {score}</p>
       )}
 
-      <p style={{ marginTop: 12, fontSize: 12, color: "#666" }}>
+      <p style={{ marginTop: 12, fontSize: 12, color: "#666", textAlign: "left" }}>
         방향키 ↑ ↓ ← → 로 조작하세요.
       </p>
     </div>
