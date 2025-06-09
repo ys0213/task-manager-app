@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import Pill from "../models/Pill";
+import UserPill from "../models/User_Pill";
 import mongoose from "mongoose";
 
 interface CreateUserBody {
@@ -154,3 +156,46 @@ export const checkUsernameExists = async(req: Request, res: Response): Promise<v
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+
+export const getAlarmPillStatus = async (req: Request, res: Response) => {
+  const { id: userId } = req.params;
+
+  try {
+    // 오늘 날짜 00:00 ~ 23:59 기준 시간 설정
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // 알람 설정된 pill만 필터링
+    const pills = await Pill.find({ userId, useAlarm: true });
+
+    let alarmPill = false;
+
+    for (const pill of pills) {
+      const intakeCycleLength = pill.intakeCycle?.length || 0;
+
+      // 오늘 이 pill에 대한 복용 기록 수
+      const takenCount = await UserPill.countDocuments({
+        pillId: pill._id,
+        intakeDateTime: {
+          $gte: startOfDay,
+          $lte: endOfDay,
+        },
+      });
+
+      // 복용 기록이 부족하면 알람 발생
+      if (takenCount < intakeCycleLength) {
+        alarmPill = true;
+        break;
+      }
+    }
+
+    res.json({ alarmPill });
+  } catch (error) {
+    console.error("alarmPill 계산 오류:", error);
+    res.status(500).json({ message: "서버 오류" });
+  }
+};

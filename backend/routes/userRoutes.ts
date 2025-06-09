@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getUserById, checkUsernameExists } from "../controllers/userController";
+import { createUser, loginUser, getUserById, checkUsernameExists, getAlarmPillStatus } from "../controllers/userController";
 
 const router = express.Router();
 
@@ -14,5 +14,8 @@ router.get("/check-username", checkUsernameExists);
 
 // GET /api/user/:id - Get user by ID
 router.get("/by-id/:id", getUserById);
+
+// GET /api/user/:id/alarm-pill - 사용자 알람 상태 가져오기
+router.get("/:id/alarm-pill", getAlarmPillStatus);
 
 export default router;

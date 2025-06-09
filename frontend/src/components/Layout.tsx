@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 // import { Menu } from "lucide-react";
 import YakTokLogo from '../assets/YakTok_logo.png';
-import { Home, Bell , Calendar, Pill , Settings, ShieldUser, KeyRound } from 'lucide-react';
+import { Home, Bell , Calendar, Pill , Settings, ShieldUser, KeyRound, BellRing } from 'lucide-react';
+import { fetchUserWithAlarm } from "../api/userApi";
 
 interface User {
     name: string;
     username: string;
     id: string;
     role : string;
+    alarmPill : boolean;
 }
-
 
 // Define types for props
 interface NavLinksProps {
@@ -81,16 +82,20 @@ const Layout = () => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-    const loginUser = localStorage.getItem("user");
-    if (loginUser) {
-        try {
-        const parsedUser: User = JSON.parse(loginUser);
-        setUser(parsedUser);
-        } catch (error) {
-        console.error("유저 정보를 파싱하는 데 실패했습니다:", error);
-        setUser(null);
-        }
-    }
+        const loadUser = async () => {
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                const parsed = JSON.parse(storedUser);
+                const fetchedUser = await fetchUserWithAlarm(parsed.id);
+                setUser(fetchedUser);
+                } catch (error) {
+                console.error("유저 정보 불러오기 실패:", error);
+                setUser(null);
+                }
+            }
+        };
+        loadUser();
     }, []);
 
     const navigate = useNavigate();
@@ -112,8 +117,16 @@ const Layout = () => {
                     <div onClick={() => navigate("/mypage")}
                     className="cursor-pointer hover:font-bold">
                     {user && <h5 className="m-0">{user.name}</h5>}</div>
-                    <div className="ml-4"><Bell className="w-6 h-6 text-[#58D68D]"></Bell></div>
+                    <div className="ml-4">
+                    {user && (
+                        user.alarmPill ? (
+                        <Link to="/home"><BellRing className="w-6 h-6 text-[#58D68D]" /></Link>
+                        ) : (
+                        <Bell className="w-6 h-6 text-[#58D68D]" />
+                        )
+                    )}
                     </div>
+                </div>
             </header>
 
             <main className="flex w-full justify-center">
