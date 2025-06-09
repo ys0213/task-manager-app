@@ -94,3 +94,27 @@ export async function checkUsernameExists(username: string): Promise<boolean> {
   const data = await res.json();
   return data.exists;
 }
+
+
+// 유저 탈퇴
+export const deactivateUser = async (id: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user/deactivate/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ isActive: false }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to deactivate user");
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Deactivate error:", err);
+    return false;
+  }
+};
+
