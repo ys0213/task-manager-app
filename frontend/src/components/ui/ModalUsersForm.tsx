@@ -30,8 +30,7 @@ if (!formData) return null;
 
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white text-black rounded-lg w-full max-w-md p-6 space-y-4 shadow-lg">
+    <div className="space-y-6 text-sm text-[#333]">
         <h2 className="text-xl font-bold mb-4">사용자 정보 수정</h2>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -72,10 +71,7 @@ if (!formData) return null;
             <option value="female">여자</option>
           </select>
         </div>
-
-
       </div>
-    </div>
   );
 };
 

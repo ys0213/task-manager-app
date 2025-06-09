@@ -4,8 +4,10 @@ export interface UserData {
   username: string;
   name: string;
   birthDate:string;
+  // Age:string;
   gender:string;
   password: string;
+  // Rating:string;
 }
 
 export interface UserResponse {
@@ -15,6 +17,10 @@ export interface UserResponse {
   createdAt: string;
   updatedAt: string;
   role: string;
+  birthDate:string;
+  // Age:string;
+  gender:string;
+  // Rating:string;
 }
 
 export interface LoginCredentials {
@@ -54,6 +60,19 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
 // 유저 생성
 export const createUser = async (user: UserData): Promise<UserResponse | null> => {
   try {
+    // // 생년월일 기준으로 한국식 나이 계산
+    // const calculateKoreanAge = (birthDateStr: string): string => {
+    //   const birthYear = new Date(birthDateStr).getFullYear();
+    //   const currentYear = new Date().getFullYear();
+    //   const age = currentYear - birthYear + 1;
+    //   return age.toString();
+    // };
+    // // Age 자동 삽입
+    // const userWithAge = {
+    //   ...user,
+    //   Age: calculateKoreanAge(user.birthDate),
+    // };
+
     const response = await fetch(`${API_BASE_URL}/user`, {
       method: "POST",
       headers: {
@@ -105,14 +124,10 @@ export async function checkUsernameExists(username: string): Promise<boolean> {
 
 
 // 유저 탈퇴
-export const deactivateUser = async (id: string): Promise<boolean> => {
+export const deactivateUser = async (userId: string): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/deactivate/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/user/deactivate/${userId}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ isActive: false }),
     });
 
     if (!response.ok) {
@@ -125,6 +140,7 @@ export const deactivateUser = async (id: string): Promise<boolean> => {
     return false;
   }
 };
+
 
 
 export const fetchUserWithAlarm = async (userId: string): Promise<User> => {

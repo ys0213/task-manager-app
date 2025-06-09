@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../components/ui/BaseButton";
+import  AddButton from "../components/ui/AddButton";
 import { MessageSquareHeart, Star } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import ModalUsersForm from "../components/ui/ModalUsersForm";
@@ -14,6 +15,7 @@ interface User {
   isActive: boolean;
   role: string;
   birthDate: Date;
+  Age:string;
   gender: string;
 }
 
@@ -35,8 +37,24 @@ const [userId, setUserId] = useState<string>("");
       if (storedUser) {
         try {
           const parsed = JSON.parse(storedUser);
+
+          // Age가 없으면 birthDate를 바탕으로 계산하여 추가
+          if (parsed.birthDate && !parsed.Age) {
+            const birth = new Date(parsed.birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+              age--;
+            }
+            parsed.Age = `${age}세`;
+
+            // localStorage에 다시 저장
+            localStorage.setItem("user", JSON.stringify(parsed));
+          }
+
           if (parsed._id) setUserId(parsed._id);
-        setUser(parsed);
+          setUser(parsed);
           setIsLoggedIn(true);
         } catch (error) {
           console.error("Failed to parse user from localStorage", error);
@@ -110,8 +128,9 @@ const [userId, setUserId] = useState<string>("");
           <div className="w-20 h-20 rounded-full bg-gray-300" />
           <div>
             <div className="text-green-500 font-semibold text-lg">{user.name}</div>
-            <div className="text-sm text-gray-700">
-              <div>  {user.gender === "male" ? "남자" : user.gender === "female" ? "여자" : "기타"}</div>
+            <div className="text-sm text-gray-700 flex">
+              <div className="mr-5">{user.gender === "male" ? "남자" : user.gender === "female" ? "여자" : "기타"}</div>
+              <div>{user.Age}</div>
             </div>
           </div>
         </div>
@@ -119,18 +138,18 @@ const [userId, setUserId] = useState<string>("");
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-<ModalUsersForm formData={formData} onChange={handleChange} />
+          <ModalUsersForm formData={formData} onChange={handleChange} />
 
+          {/* 저장하기 버튼은 이 안에서 렌더링해야 합니다 */}
+          <div className="mt-4 flex justify-center">
+            <AddButton
+              type="button" onClick={handleClickSubmit} className="cursor-pointer mt-5">저장하기
+            </AddButton>
+          </div>
         </form>
-        <div className="mt-4 flex justify-center">
-            {/* 모달 외부 제출 버튼 */}
-            {isModalOpen && (
-              <button onClick={handleClickSubmit} className="px-4 py-2 bg-blue-600 rounded text-white">
-                저장하기
-              </button>
-                )}
-        </div>
       </Modal>
+
+
 
       <div className="grid grid-cols-2 gap-4 mb-10">
         <BaseButton onClick={() => navigate("/feedback")}>

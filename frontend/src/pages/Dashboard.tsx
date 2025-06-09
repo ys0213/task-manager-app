@@ -58,9 +58,6 @@ const Dashboard: React.FC = () => {
   const [editingPillId, setEditingPillId] = useState<string | null>(null);
   const [isEditMode, setIsEditMode] = useState(false); // 추가
 
-
-  const navigate = useNavigate();
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -205,7 +202,7 @@ const Dashboard: React.FC = () => {
           {/* 모달 외부 제출 버튼 */}
           {isModalOpen && (
             <div className="mt-4 flex justify-center">
-              <AddButton onClick={handleClickSubmit} className="cursor-pointer" showPlusIcon={!isEditMode}>
+              <AddButton onClick={handleClickSubmit} className="cursor-pointer mt-5" showPlusIcon={!isEditMode}>
                 {isEditMode ? "수정하기" : "새로운 약 추가"}
               </AddButton>
             </div>
