@@ -60,18 +60,18 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
 // 유저 생성
 export const createUser = async (user: UserData): Promise<UserResponse | null> => {
   try {
-    // // 생년월일 기준으로 한국식 나이 계산
-    // const calculateKoreanAge = (birthDateStr: string): string => {
-    //   const birthYear = new Date(birthDateStr).getFullYear();
-    //   const currentYear = new Date().getFullYear();
-    //   const age = currentYear - birthYear + 1;
-    //   return age.toString();
-    // };
-    // // Age 자동 삽입
-    // const userWithAge = {
-    //   ...user,
-    //   Age: calculateKoreanAge(user.birthDate),
-    // };
+    // 생년월일 기준으로 한국식 나이 계산
+    const calculateKoreanAge = (birthDateStr: string): string => {
+      const birthYear = new Date(birthDateStr).getFullYear();
+      const currentYear = new Date().getFullYear();
+      const age = currentYear - birthYear + 1;
+      return age.toString();
+    };
+    // Age 자동 삽입
+    const userWithAge = {
+      ...user,
+      Age: calculateKoreanAge(user.birthDate),
+    };
 
     const response = await fetch(`${API_BASE_URL}/user`, {
       method: "POST",
@@ -92,6 +92,30 @@ export const createUser = async (user: UserData): Promise<UserResponse | null> =
     return null;
   }
 };
+
+export const updateUser = async (
+  id: string,
+  updatedUserData: Partial<UserResponse>
+): Promise<UserResponse | null> => {
+  try {
+    const response = await fetch(`/api/user/userUpdate/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUserData),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update user");
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+
 
 // 유저 로그인
 export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse | null> => {

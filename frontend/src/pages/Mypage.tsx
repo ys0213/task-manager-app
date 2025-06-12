@@ -5,7 +5,7 @@ import  AddButton from "../components/ui/AddButton";
 import { MessageSquareHeart, Star } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import ModalUsersForm from "../components/ui/ModalUsersForm";
-import { deactivateUser } from "../api/userApi";
+import { updateUser, deactivateUser } from "../api/userApi";
 
 interface User {
   id: string;
@@ -23,8 +23,7 @@ const Mypage = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<User | null>(null);
-const [userId, setUserId] = useState<string>("");
-  
+  const [userId, setUserId] = useState<string>("");
   const [formData, setFormData] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,24 +68,70 @@ const [userId, setUserId] = useState<string>("");
     }
   };
 
-  const handleChange = (field: keyof User, value: any) => {
+    const handleChange = (field: keyof User, value: any) => {
     if (!formData) return;
     setFormData((prev) => ({ ...prev!, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData) return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!formData) return;
 
-    if (!formData.name || !formData.username || !formData.role) {
-      alert("필수 정보를 입력해주세요.");
-      return;
-    }
+  if (!formData.name || !formData.username || !formData.role) {
+    alert("필수 정보를 입력해주세요.");
+    return;
+  }
 
-    setUser(formData);
-    localStorage.setItem("user", JSON.stringify(formData));
-    setIsModalOpen(false);
+  try {
+    const updatedUser = await updateUser(formData.id, {
+      name: formData.name,
+      birthDate: formData.birthDate.toISOString(),
+      gender: formData.gender,
+    });
+
+if (updatedUser) {
+  const calculateAge = (birthDate: Date) => {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return `${age}세`;
+};
+  // 기존 user 상태가 null이 아닐 때만 진행
+  setUser((prevUser) => {
+    if (!prevUser) return prevUser;
+
+    return {
+      ...prevUser,   // 기존 데이터 유지
+      name: updatedUser.name,
+      birthDate: new Date(updatedUser.birthDate),
+      Age: calculateAge(new Date(updatedUser.birthDate)),
+      gender: updatedUser.gender,
+    };
+  });
+
+  // localStorage도 마찬가지로 기존 저장 데이터 업데이트
+  const updatedUserForStorage = {
+    ...user,  // 기존 user 변수
+    name: updatedUser.name,
+    birthDate: updatedUser.birthDate,
+    Age: calculateAge(new Date(updatedUser.birthDate)),
+    gender: updatedUser.gender,
   };
+  localStorage.setItem("user", JSON.stringify(updatedUserForStorage));
+
+  alert("사용자 정보가 수정되었습니다.");
+  setIsModalOpen(false);
+} else {
+      alert("사용자 정보 수정에 실패했습니다.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("사용자 정보를 수정하는 데 실패했습니다.");
+  }
+};
 
   const handleClickSubmit = () => {
     formRef.current?.requestSubmit();

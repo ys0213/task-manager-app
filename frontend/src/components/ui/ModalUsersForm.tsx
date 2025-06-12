@@ -24,9 +24,12 @@ if (!formData) return null;
   const [error, setError] = useState("");
 
 
-  const handleDateChange = (value: string) => {
-    setEditUser((prev) => (prev ? { ...prev, birthDate: new Date(value) } : prev));
-  };
+const handleDateChange = (value: string) => {
+  const date = new Date(value);
+  setEditUser((prev) => (prev ? { ...prev, birthDate: date } : prev));
+  onChange("birthDate", date); // 상위 상태에도 반영
+};
+
 
 
   return (
