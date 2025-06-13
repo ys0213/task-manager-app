@@ -140,15 +140,17 @@ if (updatedUser) {
     formRef.current?.requestSubmit();
   };
 
-  const handleRatingSubmit = async (rating: number) => {
+
+const handleRatingSubmit = async (rating: number) => {
   try {
     await submitRating(rating);
     alert("평가가 등록되었습니다.");
     setIsRatingModalOpen(false);
-  } catch (error) {
-    alert("이미 평가를 제출하셨거나 오류가 발생했습니다.");
+  } catch (error: any) {
+    alert(error?.message || "이미 평가를 제출하셨거나 오류가 발생했습니다.");
   }
 };
+
 
   const handleLogout = () => {
     localStorage.removeItem("user");

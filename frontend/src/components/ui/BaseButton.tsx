@@ -12,10 +12,14 @@ export function BaseButton({ children, onClick, className = '', ...props }: Base
         <button
         onClick={onClick}
             className={`
+            ml-2 
+            p-3
+            text-xs 
+            sm:text-sm 
+            whitespace-nowrap
             cursor-pointer
             inline-block 
             rounded-full 
-            p-5
             text-sm font-bold 
             text-[#333333] 
             bg-white 
