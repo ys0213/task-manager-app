@@ -5,7 +5,8 @@ import  AddButton from "../components/ui/AddButton";
 import { MessageSquareHeart, Star } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import ModalUsersForm from "../components/ui/ModalUsersForm";
-import { updateUser, deactivateUser } from "../api/userApi";
+import { updateUser, deactivateUser, submitRating } from "../api/userApi";
+import ModalRatingForm from "../components/ui/ModalRatingForm"; // 새로 만들 컴포넌트
 
 interface User {
   id: string;
@@ -27,6 +28,8 @@ const Mypage = () => {
   const [formData, setFormData] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -137,6 +140,16 @@ if (updatedUser) {
     formRef.current?.requestSubmit();
   };
 
+  const handleRatingSubmit = async (rating: number) => {
+  try {
+    await submitRating(rating);
+    alert("평가가 등록되었습니다.");
+    setIsRatingModalOpen(false);
+  } catch (error) {
+    alert("이미 평가를 제출하셨거나 오류가 발생했습니다.");
+  }
+};
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
@@ -195,21 +208,25 @@ if (updatedUser) {
       </Modal>
 
 
-
       <div className="grid grid-cols-2 gap-4 mb-10">
-        <BaseButton onClick={() => navigate("/feedback")}>
+        <BaseButton onClick={() => navigate("/feedbackBoard")}>
           <div className="flex items-center justify-center gap-2 w-full">
             <MessageSquareHeart size={20} strokeWidth={1.5} />
             <span>개발자에게 바라는 점</span>
           </div>
         </BaseButton>
 
-        <BaseButton onClick={() => navigate("/rate")}>
-          <div className="flex items-center justify-center gap-2 w-full">
-            <Star size={20} strokeWidth={1.5} />
-            <span>앱 평가하기</span>
-          </div>
-        </BaseButton>
+    <BaseButton onClick={() => setIsRatingModalOpen(true)}>
+      <div className="flex items-center justify-center gap-2 w-full">
+        <Star size={20} strokeWidth={1.5} />
+        <span>앱 평가하기</span>
+      </div>
+    </BaseButton>
+
+    <Modal isOpen={isRatingModalOpen} onClose={() => setIsRatingModalOpen(false)}>
+      <ModalRatingForm onSubmit={handleRatingSubmit} />
+    </Modal>
+        
       </div>
 
       <div className="flex justify-center gap-6 font-bold text-[#333]">

@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
-// User_Review 타입 정의
 export interface IUserReview extends Document {
   _id: Types.ObjectId;
   feedback: string;
@@ -20,7 +19,6 @@ const userReviewSchema = new Schema<IUserReview>(
   { timestamps: true }
 );
 
-// ✅ 모델 생성 (컬렉션 이름: "User_Review")
-const UserReview = mongoose.model<IUserReview>("UserReview", userReviewSchema, "User_Review");
+const UserReview = mongoose.model<IUserReview>("UserReview", userReviewSchema, "user_Review");
 
 export default UserReview;

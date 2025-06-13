@@ -43,6 +43,12 @@ export interface User {
   alarmPill: boolean;
 }
 
+export interface FeedbackItem {
+  _id: string;
+  feedback: string;
+  feedbackDateTime: string;
+}
+
 // ID로 유저 조회
 export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   try {
@@ -166,7 +172,6 @@ export const deactivateUser = async (userId: string): Promise<boolean> => {
 };
 
 
-
 export const fetchUserWithAlarm = async (userId: string): Promise<User> => {
   const response = await fetch(`${API_BASE_URL}/user/${userId}/alarm-pill`);
   if (!response.ok) {
@@ -186,4 +191,83 @@ export const fetchUserWithAlarm = async (userId: string): Promise<User> => {
     role: parsed.role,
     alarmPill: data.alarmPill || false,
   };
+};
+
+// 피드백 생성
+export const createFeedback = async (feedback: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/feedback`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ feedback }),
+  });
+
+  if (!response.ok) {
+    throw new Error("피드백 생성 실패");
+  }
+
+  return response.json();
+};
+
+// 전체 피드백 리스트 가져오기
+export const fetchFeedbackList = async (): Promise<FeedbackItem[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user/feedback`);
+    if (!response.ok) {
+      throw new Error("피드백 불러오기 실패");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchFeedbackList error:", err);
+    return [];
+  }
+};
+
+// 피드백 수정
+export const updateFeedback = async (userId: string, feedback: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/feedback/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ feedback }),
+  });
+
+  if (!response.ok) {
+    throw new Error("피드백 수정 실패");
+  }
+
+  return response.json();
+};
+
+// 피드백 삭제
+export const deleteFeedback = async (userId: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/feedback/${userId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("피드백 삭제 실패");
+  }
+};
+
+// 평점 등록
+export const submitRating = async (rating: number) => {
+  const response = await fetch(`${API_BASE_URL}/user/rating`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ rating }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "평점 등록 실패");
+  }
+
+  return response.json();
 };

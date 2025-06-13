@@ -204,7 +204,7 @@ export const getAlarmPillStatus = async (req: Request, res: Response) => {
 export const updateUserById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    console.log(id);
+    // console.log(id);
     // 업데이트할 필드를 req.body에서 추출
     const updateFields = {
       username: req.body.username,
@@ -212,7 +212,7 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
       birthDate: req.body.birthDate,
       gender: req.body.gender,
     };
-    console.log(updateFields);
+    // console.log(updateFields);
 
     // 해당 유저를 찾아서 업데이트
     const updatedUser = await User.findByIdAndUpdate(id, updateFields, {
@@ -236,6 +236,27 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
   }
 };
 
+// 유저 비활성화 (탈퇴)
+export const deactivateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    user.isActive = false;
+    await user.save();
+
+    res.status(200).json({ message: "User deactivated successfully" });
+  } catch (error) {
+    console.error("Deactivate User Error:", error);
+    res.status(500).json({ message: "Failed to deactivate user" });
+  }
+};
+
 // POST /api/user/feedback - 새로운 피드백 작성
 export const createFeedback = async (req: Request, res: Response) => {
   const { feedback } = req.body;
@@ -247,6 +268,15 @@ export const createFeedback = async (req: Request, res: Response) => {
     res.status(201).json(newFeedback);
   } catch (err) {
     res.status(500).json({ message: "Feedback 생성 실패", error: err });
+  }
+};
+
+export const getAllFeedback = async (req: Request, res: Response) => {
+  try {
+    const feedbacks = await UserReview.find({ feedback: { $exists: true } }).sort({ feedbackDateTime: -1 });
+    res.status(200).json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ message: "피드백 조회 실패", error: err });
   }
 };
 
@@ -278,17 +308,17 @@ export const deleteFeedback = async (req: Request, res: Response) => {
 };
 
 // POST /api/user/rating - 평점 저장
-export const submitRating = async (req: Request, res: Response) => {
-  const { userId, rating } = req.body;
-
+export const submitRating = async (req: Request, res: Response) : Promise<void> => {
   try {
-    const existingRating = await UserReview.findOne({ _id: userId, rating: { $exists: true } });
+    const { rating } = req.body;
+    const existingRating = await UserReview.findOne({ rating: { $exists: true } });
+
     if (existingRating) {
-      return res.status(400).json({ message: "이미 평점을 등록하였습니다." });
+      res.status(400).json({ message: "이미 평점을 등록하였습니다." });
+      return;
     }
 
     const newRating = await UserReview.create({
-      _id: userId,
       rating,
       ratingDateTime: new Date(),
     });

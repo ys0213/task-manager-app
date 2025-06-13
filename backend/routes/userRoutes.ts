@@ -1,6 +1,6 @@
 import express from "express";
-import { createUser, loginUser, getUserById, checkUsernameExists, getAlarmPillStatus, updateUserById, 
-    createFeedback, updateFeedback, deleteFeedback, submitRating } from "../controllers/userController";
+import { createUser, loginUser, getUserById, checkUsernameExists, getAlarmPillStatus, updateUserById, deactivateUser,
+    createFeedback, getAllFeedback, updateFeedback, deleteFeedback, submitRating } from "../controllers/userController";
 
 const router = express.Router();
 
@@ -22,14 +22,18 @@ router.get("/:id/alarm-pill", getAlarmPillStatus);
 // PUT /api/user/userUpdate/:id - 사용자 정보 수정
 router.put("/userUpdate/:id", updateUserById);
 
+router.patch("/deactivate/:id", deactivateUser);
+
 // 유저 리뷰 관련
 router.post("/feedback", createFeedback);
 
+router.get("/feedback", getAllFeedback);
+
 router.put("/feedback/:id", updateFeedback);
 
-router.delete("/feedback/:id", deleteFeedback);
+router.patch("/feedback/:id", deleteFeedback);
 
-// router.post("/rating", submitRating);
+router.post("/rating", submitRating);
 
 
 export default router;
