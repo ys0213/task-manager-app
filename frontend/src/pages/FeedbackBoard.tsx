@@ -7,11 +7,30 @@ interface FeedbackItem {
   feedbackDateTime: string;
 }
 
+interface User {
+  _id: string;
+  username: string;
+  role: string;
+}
+
 const FeedbackBoard = () => {
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
   const [newFeedback, setNewFeedback] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed);
+      } catch (err) {
+        console.error("사용자 정보를 불러오는 중 오류 발생", err);
+      }
+    }
+  }, []);
 
   const loadFeedback = async () => {
     const data = await fetchFeedbackList();
@@ -89,9 +108,11 @@ const FeedbackBoard = () => {
                   <button onClick={() => handleEdit(item)} className="text-blue-500 text-sm">
                     수정
                   </button>
-                  <button onClick={() => handleDelete(item._id)} className="text-red-500 text-sm">
-                    삭제
-                  </button>
+                  {user?.role === "admin" && (
+                    <button onClick={() => handleDelete(item._id)} className="text-red-500 text-sm">
+                      삭제
+                    </button>
+                  )}
                 </div>
               </>
             )}
