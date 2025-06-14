@@ -31,7 +31,7 @@ router.get("/feedback", getAllFeedback);
 
 router.put("/feedback/:id", updateFeedback);
 
-router.patch("/feedback/:id", deleteFeedback);
+router.delete("/feedback/:id", deleteFeedback);
 
 router.post("/rating", submitRating);
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchUsers, UserResponse, updateUser } from "../api/adminApi";
 import { useNavigate } from "react-router-dom";
 import UserDetailModal from './AdminUserModal';
+import { Star } from "lucide-react";
 
 // User 타입 정의
 interface User {
@@ -13,6 +14,7 @@ interface User {
   role: string;
   birthDate: Date;
   gender: string;
+  rating?: number;
 }
 
 const AdminUsers: React.FC = () => {
@@ -59,6 +61,7 @@ const AdminUsers: React.FC = () => {
         role: u.role,
         birthDate: new Date(u.birthDate),
         gender: u.gender,
+        rating:u.rating?u.rating:0
       }));
       setUsers(parsed);
     } catch (error) {
@@ -173,6 +176,19 @@ const AdminUsers: React.FC = () => {
             <p className="text-sm text-gray-600">가입일: {user.joinDate.toLocaleDateString('ko-KR')}</p>
             <p className="text-sm text-gray-600">상태: {user.isActive ? '활동중' : '탈퇴회원'}</p>
             <p className="text-sm text-gray-600">유형: {user.role === 'admin' ? '관리자' : '일반회원'}</p>
+            <p className="text-sm text-gray-600 flex items-center gap-1">평점: 
+              {[1, 2, 3, 4, 5].map((value) => (
+                  <Star
+                    size={12}
+                    strokeWidth={1.5}
+                    className={
+                      (user.rating?user.rating:0) >= value
+                        ? "fill-yellow-400 stroke-yellow-500"
+                        : "stroke-gray-400"
+                    }
+                  />
+              ))}
+            </p>
           </div>
         ))}
       </div>

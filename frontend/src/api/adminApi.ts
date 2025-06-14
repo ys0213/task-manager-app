@@ -9,6 +9,7 @@ export interface UserResponse {
   role: string;
   birthDate: Date;
   gender: string;
+  rating?: number;
 }
 
 interface Pill {

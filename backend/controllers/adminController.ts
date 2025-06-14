@@ -31,6 +31,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       joinDate: user.joinDate,
       birthDate: user.birthDate,
       gender: user.gender,
+      rating:user.rating?user.rating:0
     }));
     res.status(200).json(formattedUsers);
   } catch (err) {

@@ -10,6 +10,7 @@ export interface IUser extends Document {
   joinDate: Date;
   role: "admin" | "user";
   isActive: boolean;
+  rating?:number;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -31,6 +32,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     joinDate: { type: Date, required: true, default: Date.now },
     role: { type: String, enum: ["admin", "user"], default: "user" },
     isActive: { type: Boolean, required: true, default: true },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
   },
   { timestamps: true }
 );
