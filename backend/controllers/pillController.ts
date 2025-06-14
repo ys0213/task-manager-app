@@ -105,7 +105,6 @@ export const updatePillById = async (req: Request, res: Response): Promise<void>
       useAlarm: req.body.useAlarm,
       pillType: req.body.pillType
     };
-    console.log(updateFields);
     // 해당 약을 찾아서 업데이트
     const updatedPill = await Pill.findOneAndUpdate(
       { _id: id },

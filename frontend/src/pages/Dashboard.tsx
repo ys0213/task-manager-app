@@ -76,32 +76,31 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (userId) {
       loadPills(userId);
     }    
   }, [userId]);
 
-    const loadPills = async ( userId:string ) => {
-      try {
-        const data = await fetchPillsByUserID(userId);
-        
-        // undefined인 description을 빈 문자열로 처리
-        const normalized: Pill[] = data.map((p) => ({
-        _id: p._id,
-        name: p.name,
-        description: p.description ?? "",
-        intakeCycle: p.intakeCycle,
-        isCurrentlyUsed: p.isCurrentlyUsed,
-        useAlarm: p.useAlarm,
-        pillType: p.pillType,
-        userId: p.userId
-        }));
-        setPills(normalized);
-      } catch (error) {
-        console.error("Failed to load pills", error);
-      }
-    };
+  const loadPills = async ( userId:string ) => {
+    try {
+      const data = await fetchPillsByUserID(userId);
+      // undefined인 description을 빈 문자열로 처리
+      const normalized: Pill[] = data.map((p) => ({
+      _id: p._id,
+      name: p.name,
+      description: p.description ?? "",
+      intakeCycle: p.intakeCycle,
+      isCurrentlyUsed: p.isCurrentlyUsed,
+      useAlarm: p.useAlarm,
+      pillType: p.pillType,
+      userId: p.userId
+      }));
+      setPills(normalized);
+    } catch (error) {
+      console.error("Failed to load pills", error);
+    }
+  };
 
 
   // 수정 버튼
@@ -121,73 +120,73 @@ const Dashboard: React.FC = () => {
     setIsModalOpen(true);
   };
 
-    // 삭제 버튼
-    const handleDeleteClick = async (pillId: string) => {
-      try {
-        const pill = pills.find(p => p._id === pillId);
-        if (!pill) return;
+  // 삭제 버튼
+  const handleDeleteClick = async (pillId: string) => {
+    try {
+      const pill = pills.find(p => p._id === pillId);
+      if (!pill) return;
 
-        const updatedPill = { ...pill, isCurrentlyUsed: false };
-        await updatePill(updatedPill); // API 호출
+      const updatedPill = { ...pill, isCurrentlyUsed: false };
+      await updatePill(updatedPill); // API 호출
 
-        setPills((prev) =>
-          prev.map((p) => (p._id === pillId ? updatedPill : p))
-        );
-      } catch (error) {
-        console.error("Failed to deactivate pill", error);
-      }
+      setPills((prev) =>
+        prev.map((p) => (p._id === pillId ? updatedPill : p))
+      );
+    } catch (error) {
+      console.error("Failed to deactivate pill", error);
+    }
+  };
+
+  // 모달폼에서 데이터 받아오는 부분
+  const handleChange = (field: string, value: string | boolean | string[]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // 모달 버튼
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!userId) {
+      console.error("User ID is missing");
+      return;
+    }
+
+    const pillToSave: Pill = {
+      _id: formData._id,
+      name: formData.name,
+      description: formData.description,
+      intakeCycle: formData.intakeCycle,
+      isCurrentlyUsed: formData.isCurrentlyUsed,
+      useAlarm: formData.useAlarm,
+      pillType: formData.pillType,
+      userId: userId,
     };
 
-    // 모달폼에서 데이터 받아오는 부분
-      const handleChange = (field: string, value: string | boolean | string[]) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-      };
+    try {
+      if (isEditMode && editingPillId) {
+        // 수정 모드: update API 호출
+        await updatePill(pillToSave);
+        setPills((prev) =>
+          prev.map((p) => (p._id === editingPillId ? pillToSave : p))
+        );
+      } else if (!isEditMode) {
+        // 추가 모드: create API 호출
+        await createPill(pillToSave);
+        setPills((prev) => [...prev, pillToSave]);
+      }
 
-    // 모달 버튼
-      const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+      setFormData(getInitialFormData(userId));
+      setEditingPillId(null);
+      setIsEditMode(false);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to save pill", error);
+    }
+  };
 
-        if (!userId) {
-          console.error("User ID is missing");
-          return;
-        }
-
-        const pillToSave: Pill = {
-          _id: formData._id,
-          name: formData.name,
-          description: formData.description,
-          intakeCycle: formData.intakeCycle,
-          isCurrentlyUsed: formData.isCurrentlyUsed,
-          useAlarm: formData.useAlarm,
-          pillType: formData.pillType,
-          userId: userId,
-        };
-
-        try {
-          if (isEditMode && editingPillId) {
-            // 수정 모드: update API 호출
-            await updatePill(pillToSave);
-            setPills((prev) =>
-              prev.map((p) => (p._id === editingPillId ? pillToSave : p))
-            );
-          } else if (!isEditMode) {
-            // 추가 모드: create API 호출
-            await createPill(pillToSave);
-            setPills((prev) => [...prev, pillToSave]);
-          }
-
-          setFormData(getInitialFormData(userId));
-          setEditingPillId(null);
-          setIsEditMode(false);
-          setIsModalOpen(false);
-        } catch (error) {
-          console.error("Failed to save pill", error);
-        }
-      };
-
-      const handleClickSubmit = () => {
-        formRef.current?.requestSubmit(); // 외부 버튼에서 form 제출 유도
-      };
+  const handleClickSubmit = () => {
+    formRef.current?.requestSubmit(); // 외부 버튼에서 form 제출 유도
+  };
 
   return (
     <div className="px-4 w-full">

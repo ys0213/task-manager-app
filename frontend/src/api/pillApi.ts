@@ -102,7 +102,6 @@ export const homeUserPills = async (userId: string): Promise<PillResponse[]> => 
 // 수정하기
 export const updatePill = async (Pill: Pill ): Promise<PillResponse | null> => {
   try {
-    console.log(Pill._id);
     const response = await fetch(`${API_BASE_URL}/pills/${Pill._id}`, {
       method: "PUT",
       headers: {
