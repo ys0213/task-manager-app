@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User";
 import Pill from "../models/Pill";
 import UserPill from "../models/User_Pill";
+import UserReview from "../models/User_Review";
 import mongoose from "mongoose";
 
 interface CreateUserBody {
@@ -197,5 +198,133 @@ export const getAlarmPillStatus = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("alarmPill 계산 오류:", error);
     res.status(500).json({ message: "서버 오류" });
+  }
+};
+
+export const updateUserById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    // console.log(id);
+    // 업데이트할 필드를 req.body에서 추출
+    const updateFields = {
+      username: req.body.username,
+      name: req.body.name,
+      birthDate: req.body.birthDate,
+      gender: req.body.gender,
+    };
+    // console.log(updateFields);
+
+    // 해당 유저를 찾아서 업데이트
+    const updatedUser = await User.findByIdAndUpdate(id, updateFields, {
+      new: true, // 업데이트 후의 문서를 반환
+      runValidators: true, // 모델의 유효성 검사 적용
+    }).select("-password"); // 비밀번호 제외
+    if (!updatedUser) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      username: updatedUser.username,
+      name: updatedUser.name,
+      birthDate: updatedUser.birthDate,
+      gender: updatedUser.gender,
+    });
+  } catch (err) {
+    console.error("Update User Error:", err);
+    res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+// 유저 비활성화 (탈퇴)
+export const deactivateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    user.isActive = false;
+    await user.save();
+
+    res.status(200).json({ message: "User deactivated successfully" });
+  } catch (error) {
+    console.error("Deactivate User Error:", error);
+    res.status(500).json({ message: "Failed to deactivate user" });
+  }
+};
+
+// POST /api/user/feedback - 새로운 피드백 작성
+export const createFeedback = async (req: Request, res: Response) => {
+  const { feedback } = req.body;
+  try {
+    const newFeedback = await UserReview.create({
+      feedback,
+      feedbackDateTime: new Date(),
+    });
+    res.status(201).json(newFeedback);
+  } catch (err) {
+    res.status(500).json({ message: "Feedback 생성 실패", error: err });
+  }
+};
+
+export const getAllFeedback = async (req: Request, res: Response) => {
+  try {
+    const feedbacks = await UserReview.find({ feedback: { $exists: true } }).sort({ feedbackDateTime: -1 });
+    res.status(200).json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ message: "피드백 조회 실패", error: err });
+  }
+};
+
+// PUT /api/user/feedback/:id - 피드백 수정
+export const updateFeedback = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { feedback } = req.body;
+  try {
+    const updated = await UserReview.findByIdAndUpdate(
+      id,
+      { feedback, feedbackDateTime: new Date() },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Feedback 수정 실패", error: err });
+  }
+};
+
+// DELETE /api/user/feedback/:id - 피드백 삭제
+export const deleteFeedback = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await UserReview.findByIdAndDelete(id);
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ message: "Feedback 삭제 실패", error: err });
+  }
+};
+
+// POST /api/user/rating - 평점 저장
+export const submitRating = async (req: Request, res: Response) : Promise<void> => {
+  try {
+    const { rating } = req.body;
+    const existingRating = await UserReview.findOne({ rating: { $exists: true } });
+
+    if (existingRating) {
+      res.status(400).json({ message: "이미 평점을 등록하였습니다." });
+      return;
+    }
+
+    const newRating = await UserReview.create({
+      rating,
+      ratingDateTime: new Date(),
+    });
+
+    res.status(201).json(newRating);
+  } catch (err) {
+    res.status(500).json({ message: "Rating 등록 실패", error: err });
   }
 };

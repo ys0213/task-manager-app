@@ -28,6 +28,7 @@ p{
 }
 
 body {
+  min-width: 400px;
   margin: 10;
   min-height: 100vh;
 }
@@ -72,4 +73,128 @@ select{
   background-color: rgba(117, 117, 117, 0.87);
 }
 
+.bottom-nav-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 860px) {
+
+    .sidebar-desktop {
+    display: none !important;
+  }
+
+  
+  body {
+    background-color: #f6f7f9;
+    margin: 0;
+    background-color: #f7f9fc;
+    color: #333;
+  }
+
+  /* 헤더 */
+  .header {
+    display: block !important;
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; */
+  }
+
+  /* 본문 */
+  .main {
+    margin-top: 56px;
+    padding: 16px;
+  }
+
+  h4 {
+    color: #333333;
+    margin-bottom:5px ;
+    margin-top:15px ;
+  }
+
+  /* 카드 스타일 */
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: scale(1.01);
+  }
+
+  /* 카드 내부 콘텐츠 */
+  .card-title {
+    margin-bottom: 8px;
+  }
+
+  .card-description {    color: #666;
+  }
+
+  /* 버튼 스타일 */
+  .full-button {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #4f46e5;
+    color: white;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .full-button:hover {
+    background-color: #4338ca;
+  }
+
+
+  .bottom-nav-mobile {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background-color: #b0edca;
+    border-top: 1px solid #ccc;
+    justify-content: space-around;
+    padding: 8px 0;
+  }
+
+  .bottom-nav-mobile a {
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    flex: 1; /* 네 개 메뉴가 균등하게 분배됨 */
+  }
+
+  .bottom-nav-mobile svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 2px;
+  }
+
+  .main-content-area {
+    padding-bottom: 64px; /* 하단 네비게이션 높이만큼 공간 확보 */
+  }
+
+  .logo-title{
+    background: #fff;
+  }
+  
+}
 

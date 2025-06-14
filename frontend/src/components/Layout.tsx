@@ -103,11 +103,11 @@ const Layout = () => {
     return (
     <div className="min-h-screen bg-white flex justify-center px-[calc(100%/12)] ">
         {/* 10그리드 중앙 콘텐츠 (양쪽 1그리드 마진) */}
-        <div className="shadow w-full max-w-screen-lg">
+        <div className="md:shadow w-full max-w-screen-lg">
             {/* Top header */}
             <header className="flex w-full items-center justify-between h-20 bg-white ">
                 {/* App title 3그리드 */}
-                <h1 className="w-64 bg-[#B0EDCA]">
+                <h1 className="w-64 bg-[#B0EDCA] logo-title">
                     <Link to="/home" className="flex justify-center items-center">
                     <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
                     </Link>
@@ -129,18 +129,34 @@ const Layout = () => {
                 </div>
             </header>
 
-            <main className="flex w-full justify-center">
+            <main className="flex w-full justify-center relative">
                 {/* Sidebar for desktop */}
-                <aside className="w-64 bg-[#B0EDCA] min-h-screen">
+                <aside className="w-64 bg-[#B0EDCA] min-h-screen sidebar-desktop">
                     <div className="p-2 h-full">
                         <NavLinks onClick={() => setMenuOpen(false)} user={user} />
                     </div>
                 </aside>
 
                 {/* Main content area */}
-                <div className="w-full max-w-screen-md px-4">
+                <div className="w-full max-w-screen-md px-4 main-content-area">
                     <Outlet />
                 </div>
+
+                  {/* Bottom Navigation (Mobile only) */}
+                    <nav className="bottom-nav-mobile">
+                        <Link to="/home">
+                            <Home />
+                        </Link>
+                        <Link to="/dashboard">
+                            <Pill />
+                        </Link>
+                        <Link to="/pillsCalendar">
+                            <Calendar />
+                        </Link>
+                        <Link to="/mypage">
+                            <Settings />
+                        </Link>
+                    </nav>
             </main>
         </div>
     </div>
