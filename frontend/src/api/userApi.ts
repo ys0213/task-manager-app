@@ -17,10 +17,12 @@ export interface UserResponse {
   createdAt: string;
   updatedAt: string;
   role: string;
-  birthDate:string;
-  // Age:string;
+  joinDate: Date;
+  birthDate:Date;
+  isActive: boolean;
+  Age:string;
   gender:string;
-  // Rating:string;
+  Rating:number;
 }
 
 export interface LoginCredentials {
@@ -47,6 +49,7 @@ export interface FeedbackItem {
   _id: string;
   feedback: string;
   feedbackDateTime: string;
+  userId:string;
 }
 
 // ID로 유저 조회
@@ -194,13 +197,13 @@ export const fetchUserWithAlarm = async (userId: string): Promise<User> => {
 };
 
 // 피드백 생성
-export const createFeedback = async (feedback: string) => {
+export const createFeedback = async (feedback: string, userId: string) => {
   const response = await fetch(`${API_BASE_URL}/user/feedback`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ feedback }),
+    body: JSON.stringify({ feedback, userId }),
   });
 
   if (!response.ok) {
@@ -255,13 +258,13 @@ export const deleteFeedback = async (userId: string) => {
 };
 
 // 평점 등록
-export const submitRating = async (rating: number) => {
+export const submitRating = async (userId:string, rating: number) => {
   const response = await fetch(`${API_BASE_URL}/user/rating`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ rating }),
+    body: JSON.stringify({ userId, rating }),
   });
 
   if (!response.ok) {

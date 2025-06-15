@@ -88,7 +88,7 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
 
     const user = await User.findOne({ username, isActive: true });
     if (!user) {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ message: "Invalid user" });
       return;
     }
 
@@ -99,12 +99,14 @@ export const loginUser = async (req: Request<{}, {}, LoginUserBody>, res: Respon
     }
 
     res.status(200).json({
+      _id:user._id,
       name: user.name,
       username: user.username,
       id: user._id,
       birthDate: user.birthDate,
       role:user.role,
-      gender:user.gender
+      gender:user.gender,
+      rating:user.rating?user.rating:0
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -120,7 +122,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
       res.status(404).json({ message: "User not found" });
       return;
     }
-
+    user.id = user._id;
     res.status(200).json(user);
   } catch (err) {
     console.error("Get User Error:", err);
@@ -161,7 +163,6 @@ export const checkUsernameExists = async(req: Request, res: Response): Promise<v
 
 export const getAlarmPillStatus = async (req: Request, res: Response) => {
   const { id: userId } = req.params;
-
   try {
     // 오늘 날짜 00:00 ~ 23:59 기준 시간 설정
     const startOfDay = new Date();
@@ -193,7 +194,6 @@ export const getAlarmPillStatus = async (req: Request, res: Response) => {
         break;
       }
     }
-
     res.json({ alarmPill });
   } catch (error) {
     console.error("alarmPill 계산 오류:", error);
@@ -204,7 +204,6 @@ export const getAlarmPillStatus = async (req: Request, res: Response) => {
 export const updateUserById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    // console.log(id);
     // 업데이트할 필드를 req.body에서 추출
     const updateFields = {
       username: req.body.username,
@@ -212,7 +211,6 @@ export const updateUserById = async (req: Request, res: Response): Promise<void>
       birthDate: req.body.birthDate,
       gender: req.body.gender,
     };
-    // console.log(updateFields);
 
     // 해당 유저를 찾아서 업데이트
     const updatedUser = await User.findByIdAndUpdate(id, updateFields, {
@@ -259,11 +257,12 @@ export const deactivateUser = async (req: Request, res: Response): Promise<void>
 
 // POST /api/user/feedback - 새로운 피드백 작성
 export const createFeedback = async (req: Request, res: Response) => {
-  const { feedback } = req.body;
+  const { feedback, userId } = req.body;
   try {
     const newFeedback = await UserReview.create({
       feedback,
       feedbackDateTime: new Date(),
+      userId:new mongoose.Types.ObjectId(userId),
     });
     res.status(201).json(newFeedback);
   } catch (err) {
@@ -310,20 +309,25 @@ export const deleteFeedback = async (req: Request, res: Response) => {
 // POST /api/user/rating - 평점 저장
 export const submitRating = async (req: Request, res: Response) : Promise<void> => {
   try {
-    const { rating } = req.body;
-    const existingRating = await UserReview.findOne({ rating: { $exists: true } });
+    const { userId, rating } = req.body;
+    const objectUserId = new mongoose.Types.ObjectId(userId);
+    const user = await User.findOne({
+      _id: objectUserId,
+      $or: [
+        { rating: { $exists: false } },
+        { rating: 0 },
+      ],
+    });
 
-    if (existingRating) {
+    if (!user) {
       res.status(400).json({ message: "이미 평점을 등록하였습니다." });
       return;
     }
 
-    const newRating = await UserReview.create({
-      rating,
-      ratingDateTime: new Date(),
-    });
+    user.rating = rating;
+    await user.save();
 
-    res.status(201).json(newRating);
+    res.status(200).json({ message: "평점이 성공적으로 등록되었습니다.", user });
   } catch (err) {
     res.status(500).json({ message: "Rating 등록 실패", error: err });
   }

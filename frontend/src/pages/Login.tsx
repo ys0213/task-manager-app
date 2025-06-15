@@ -40,7 +40,7 @@ export default function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {        
+      if (!response.ok) {
         throw new Error("Login failed");        
       }
 

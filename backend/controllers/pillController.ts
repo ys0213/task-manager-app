@@ -95,7 +95,6 @@ export const getPillById = async (req: Request, res: Response): Promise<void> =>
 export const updatePillById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    console.log(id);
     // 업데이트할 필드를 req.body에서 추출
     const updateFields = {
       name: req.body.name,

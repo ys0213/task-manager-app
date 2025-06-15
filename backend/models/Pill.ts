@@ -26,7 +26,7 @@ const pillSchema: Schema<IPill> = new mongoose.Schema(
       enum: ["pill", "supplement"], 
       default: "supplement" 
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }  
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
   },
   { timestamps: true }
 );

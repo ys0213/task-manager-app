@@ -5,6 +5,7 @@ interface FeedbackItem {
   _id: string;
   feedback: string;
   feedbackDateTime: string;
+  userId:string;
 }
 
 interface User {
@@ -43,7 +44,7 @@ const FeedbackBoard = () => {
 
   const handleCreate = async () => {
     if (!newFeedback.trim()) return;
-    await createFeedback(newFeedback);
+    await createFeedback(newFeedback, user ? user._id:"");
     setNewFeedback("");
     loadFeedback();
   };
@@ -105,9 +106,11 @@ const FeedbackBoard = () => {
                 <div className="text-sm text-gray-700">{item.feedback}</div>
                 <div className="text-xs text-gray-500">{new Date(item.feedbackDateTime).toLocaleString()}</div>
                 <div className="flex gap-2 mt-1">
+                  {user && user._id==item.userId && (
                   <button onClick={() => handleEdit(item)} className="text-blue-500 text-sm">
                     수정
                   </button>
+                  )}
                   {user?.role === "admin" && (
                     <button onClick={() => handleDelete(item._id)} className="text-red-500 text-sm">
                       삭제

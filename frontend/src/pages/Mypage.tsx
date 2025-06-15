@@ -5,8 +5,8 @@ import  AddButton from "../components/ui/AddButton";
 import { MessageSquareHeart, Star } from "lucide-react";
 import Modal from "../components/ui/Modal";
 import ModalUsersForm from "../components/ui/ModalUsersForm";
-import { updateUser, deactivateUser, submitRating } from "../api/userApi";
-import ModalRatingForm from "../components/ui/ModalRatingForm"; // 새로 만들 컴포넌트
+import { updateUser, deactivateUser, submitRating, fetchUser } from "../api/userApi";
+import ModalRatingForm from "../components/ui/ModalRatingForm";
 
 interface User {
   id: string;
@@ -18,6 +18,7 @@ interface User {
   birthDate: Date;
   Age:string;
   gender: string;
+  rating?:number;
 }
 
 const Mypage = () => {
@@ -33,36 +34,37 @@ const Mypage = () => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-    // 현재 로그인한 관리자 ID 가져오기
-    useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
+  // 현재 로그인한 관리자 ID 가져오기
+  useEffect(() => {
+    
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
 
-          // Age가 없으면 birthDate를 바탕으로 계산하여 추가
-          if (parsed.birthDate && !parsed.Age) {
-            const birth = new Date(parsed.birthDate);
-            const today = new Date();
-            let age = today.getFullYear() - birth.getFullYear();
-            const m = today.getMonth() - birth.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-              age--;
-            }
-            parsed.Age = `${age}세`;
-
-            // localStorage에 다시 저장
-            localStorage.setItem("user", JSON.stringify(parsed));
+        // Age가 없으면 birthDate를 바탕으로 계산하여 추가
+        if (parsed.birthDate && !parsed.Age) {
+          const birth = new Date(parsed.birthDate);
+          const today = new Date();
+          let age = today.getFullYear() - birth.getFullYear();
+          const m = today.getMonth() - birth.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
           }
+          parsed.Age = `${age}세`;
 
-          if (parsed._id) setUserId(parsed._id);
-          setUser(parsed);
-          setIsLoggedIn(true);
-        } catch (error) {
-          console.error("Failed to parse user from localStorage", error);
+          // localStorage에 다시 저장
+          localStorage.setItem("user", JSON.stringify(parsed));
         }
+
+        if (parsed.id) setUserId(parsed.id);
+        setUser(parsed);
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
       }
-    }, []);
+    }
+  }, []);
 
   const handleOpenModal = () => {
     if (user) {
@@ -71,85 +73,90 @@ const Mypage = () => {
     }
   };
 
-    const handleChange = (field: keyof User, value: any) => {
+  const handleChange = (field: keyof User, value: any) => {
     if (!formData) return;
     setFormData((prev) => ({ ...prev!, [field]: value }));
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!formData) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData) return;
 
-  if (!formData.name || !formData.username || !formData.role) {
-    alert("필수 정보를 입력해주세요.");
-    return;
-  }
-
-  try {
-    const updatedUser = await updateUser(formData.id, {
-      name: formData.name,
-      birthDate: formData.birthDate.toISOString(),
-      gender: formData.gender,
-    });
-
-if (updatedUser) {
-  const calculateAge = (birthDate: Date) => {
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return `${age}세`;
-};
-  // 기존 user 상태가 null이 아닐 때만 진행
-  setUser((prevUser) => {
-    if (!prevUser) return prevUser;
-
-    return {
-      ...prevUser,   // 기존 데이터 유지
-      name: updatedUser.name,
-      birthDate: new Date(updatedUser.birthDate),
-      Age: calculateAge(new Date(updatedUser.birthDate)),
-      gender: updatedUser.gender,
-    };
-  });
-
-  // localStorage도 마찬가지로 기존 저장 데이터 업데이트
-  const updatedUserForStorage = {
-    ...user,  // 기존 user 변수
-    name: updatedUser.name,
-    birthDate: updatedUser.birthDate,
-    Age: calculateAge(new Date(updatedUser.birthDate)),
-    gender: updatedUser.gender,
-  };
-  localStorage.setItem("user", JSON.stringify(updatedUserForStorage));
-
-  alert("사용자 정보가 수정되었습니다.");
-  setIsModalOpen(false);
-} else {
-      alert("사용자 정보 수정에 실패했습니다.");
+    if (!formData.name || !formData.username || !formData.role) {
+      alert("필수 정보를 입력해주세요.");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    alert("사용자 정보를 수정하는 데 실패했습니다.");
-  }
-};
+
+    try {
+      const updatedUser = await updateUser(formData.id, {
+        name: formData.name,
+        birthDate: formData.birthDate,
+        gender: formData.gender,
+      });
+
+      if (updatedUser) {
+        const calculateAge = (birthDate: Date) => {
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return `${age}세`;
+      };
+      // 기존 user 상태가 null이 아닐 때만 진행
+      setUser((prevUser) => {
+        if (!prevUser) return prevUser;
+
+        return {
+          ...prevUser,   // 기존 데이터 유지
+          name: updatedUser.name,
+          birthDate: new Date(updatedUser.birthDate),
+          Age: calculateAge(new Date(updatedUser.birthDate)),
+          gender: updatedUser.gender,
+        };
+      });
+
+      // localStorage도 마찬가지로 기존 저장 데이터 업데이트
+      const updatedUserForStorage = {
+        ...user,  // 기존 user 변수
+        name: updatedUser.name,
+        birthDate: updatedUser.birthDate,
+        Age: calculateAge(new Date(updatedUser.birthDate)),
+        gender: updatedUser.gender,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUserForStorage));
+
+      alert("사용자 정보가 수정되었습니다.");
+      setIsModalOpen(false);
+      } else {
+        alert("사용자 정보 수정에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("사용자 정보를 수정하는 데 실패했습니다.");
+    }
+  };
 
   const handleClickSubmit = () => {
     formRef.current?.requestSubmit();
   };
 
 
-const handleRatingSubmit = async (rating: number) => {
-  try {
-    await submitRating(rating);
-    alert("평가가 등록되었습니다.");
-    setIsRatingModalOpen(false);
-  } catch (error: any) {
-    alert(error?.message || "이미 평가를 제출하셨거나 오류가 발생했습니다.");
-  }
-};
+  const handleRatingSubmit = async (rating: number) => {
+    try {
+      await submitRating(userId, rating);
+
+      const updatedUser = await fetchUser(userId);
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      alert("평가가 등록되었습니다.");
+      setIsRatingModalOpen(false);
+    } catch (error: any) {
+      alert(error?.message || "이미 평가를 제출하셨거나 오류가 발생했습니다.");
+    }
+  };
 
 
   const handleLogout = () => {
@@ -217,17 +224,33 @@ const handleRatingSubmit = async (rating: number) => {
             <span>개발자에게 바라는 점</span>
           </div>
         </BaseButton>
-
-    <BaseButton onClick={() => setIsRatingModalOpen(true)}>
-      <div className="flex items-center justify-center gap-2 w-full">
-        <Star size={20} strokeWidth={1.5} />
-        <span>앱 평가하기</span>
-      </div>
-    </BaseButton>
-
-    <Modal isOpen={isRatingModalOpen} onClose={() => setIsRatingModalOpen(false)}>
-      <ModalRatingForm onSubmit={handleRatingSubmit} />
-    </Modal>
+        {user&&(!user.rating||user.rating==0)? 
+          <BaseButton onClick={() => setIsRatingModalOpen(true)}>
+            <div className="flex items-center justify-center gap-2 w-full">
+              <Star size={20} strokeWidth={1.5} />
+              <span>앱 평가하기</span>
+            </div>
+          </BaseButton> : 
+          <BaseButton>
+            <div className="flex items-center justify-center gap-2 w-full">
+              {[1, 2, 3, 4, 5].map((value) => (
+                  <Star
+                    key={value}
+                    size={20}
+                    strokeWidth={1.5}
+                    className={
+                      (user.rating?user.rating:0) >= value
+                        ? "fill-yellow-400 stroke-yellow-500"
+                        : "stroke-gray-400"
+                    }
+                  />
+              ))}
+            </div>
+          </BaseButton>
+        }
+        <Modal isOpen={isRatingModalOpen} onClose={() => setIsRatingModalOpen(false)}>
+          <ModalRatingForm onSubmit={handleRatingSubmit} />
+        </Modal>
         
       </div>
 
