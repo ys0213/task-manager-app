@@ -10,6 +10,7 @@ const AddButton = ({
     children,
     onClick,
     className = '',
+    showPlusIcon = true,
     ...props
 }: AddButtonProps) => {
     return (

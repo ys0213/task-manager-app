@@ -87,7 +87,8 @@ const Layout = () => {
             if (storedUser) {
                 try {
                 const parsed = JSON.parse(storedUser);
-                const fetchedUser = await fetchUserWithAlarm(parsed.id);
+                const fetchedUser = await fetchUserWithAlarm(parsed._id);
+                console.log(parsed._id);
                 setUser(fetchedUser);
                 } catch (error) {
                 console.error("유저 정보 불러오기 실패:", error);

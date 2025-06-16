@@ -40,9 +40,10 @@ const Home: React.FC = () => {
     return `${h}:${m}`;
   };
 
-    const fetchPills = async (uid: string) => {
+    const fetchPills = async ( userId:string ) => {
     try {
-        const res = await homeUserPills(uid); // [{ ...pill, takenHistory: [...] }]
+        const res = await homeUserPills(userId); // [{ ...pill, takenHistory: [...] }]
+        console.log(res);
         const processed: PillCard[] = [];
 
         const todayDate = new Date().toISOString().split("T")[0];

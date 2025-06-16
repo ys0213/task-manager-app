@@ -63,9 +63,9 @@ const Dashboard: React.FC = () => {
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        if (parsed.id) {
-          setUserId(parsed.id);
-          setFormData((prev) => ({ ...prev, userId: parsed.id }));
+        if (parsed._id) {
+          setUserId(parsed._id);
+          setFormData((prev) => ({ ...prev, userId: parsed._id }));
         }
       } catch (error) {
         console.error("Failed to parse user from localStorage", error);
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
+      useEffect(() => {
     if (userId) {
       loadPills(userId);
     }    
@@ -98,7 +98,6 @@ const Dashboard: React.FC = () => {
       console.error("Failed to load pills", error);
     }
   };
-
 
   // 수정 버튼
   const handleEditClick = (pill: Pill) => {
