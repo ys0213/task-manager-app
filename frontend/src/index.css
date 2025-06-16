@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'NanumSquare', Helvetica, system-ui, Avenir, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
   font-synthesis: none;
@@ -64,13 +63,23 @@ label{
 }
 
 input{
-  background-color: rgba(117, 117, 117, 0.87);
+  border-radius: 12px;
+  border-color:#58D68D;
+      color: #333;
+
 }
 textarea{
-  background-color: rgba(117, 117, 117, 0.87);
+  border-radius: 12px;
+  border-color:#58D68D;
+      color: #333;
+
 }
+  
 select{
-  background-color: rgba(117, 117, 117, 0.87);
+  border-radius: 12px;
+  border-color:#58D68D;
+      color: #333;
+
 }
 
 .bottom-nav-mobile {

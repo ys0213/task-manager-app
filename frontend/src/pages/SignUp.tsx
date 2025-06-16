@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser, checkUsernameExists } from "../api/userApi";
+import YakTokLogo from '../assets/YakTok_logo.png';
+
 
 // 사용자 데이터 타입 정의
 interface UserData {
@@ -121,7 +123,10 @@ export default function SignUp() {
         onSubmit={handleSignUp}
         className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <div className="flex items-center justify-center">
+          <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
+        </div>
+        <h4 className="m-3 text-center font-bold" style={{ color: '#333' }}>회원가입</h4>
 
         {/* 서버에서 온 에러 메시지 표시 */}
         {errorMessage && (
@@ -131,7 +136,7 @@ export default function SignUp() {
         {/* 아이디 입력 */}
         <div className="mb-4">
           <div className="flex justify-between mb-1">
-            <label className="font-medium">User Id</label>
+            <label className="font-medium">아이디</label>
             <span className="font-medium text-red-600 text-sm">4글자 이상</span>
           </div>
 
@@ -151,7 +156,7 @@ export default function SignUp() {
               className={`px-4 py-2 rounded-lg border ${
                 userData.username.length < 4
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-green-200 font-semibold text-gray-700 hover:bg-green-300"
               } transition`}
             >
               중복확인
@@ -169,7 +174,7 @@ export default function SignUp() {
 
         {/* 이름 입력 */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Name</label>
+          <label className="block mb-1 font-medium">이름</label>
           <input
             type="text"
             name="name"
@@ -182,7 +187,7 @@ export default function SignUp() {
 
         {/* 생년월일 입력 */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Birth Date</label>
+          <label className="block mb-1 font-medium">생년월일</label>
           <input
             type="date"
             name="birthDate"
@@ -195,7 +200,7 @@ export default function SignUp() {
 
         {/* 성별 입력 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium">Gender</label>
+          <label className="block text-sm font-medium">성별</label>
           <select
             value={userData.gender}
             onChange={(e) => handleChangeEnum("gender", e.target.value)}
@@ -211,7 +216,7 @@ export default function SignUp() {
         {/* 비밀번호 입력 */}
         <div className="mb-6">
           <div className="flex justify-between mb-1">
-            <label className="block mb-1 font-medium">Password</label>
+            <label className="block mb-1 font-medium">비밀번호</label>
             <span className="font-medium text-red-600 text-sm">8글자 이상. 문자, 숫자, 특수문자 포함</span>
           </div>          
           <input
@@ -226,7 +231,7 @@ export default function SignUp() {
 
         {/* 비밀번호 확인 입력 */}
         <div className="mb-6">
-          <label className="block mb-1 font-medium">Confirm Password</label>
+          <label className="block mb-1 font-medium">비밀번호 확인</label>
           <input
             type="password"
             name="confirmPassword"
@@ -245,20 +250,20 @@ export default function SignUp() {
         {/* 회원가입 버튼 */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-green-200 text-sm font-semibold text-gray-700 px-6 py-3 rounded-full hover:bg-green-300 transition"
         >
-          Sign Up
+          회원가입
         </button>
 
         {/* 로그인 페이지로 가는 링크 */}
         <div className="mt-4 text-center">
           <p>
-            Already have an account?{" "}
+            약톡 계정이 있으신가요?{" "}
             <a
               href="/task-manager-app/#/login"
-              className="text-blue-600 hover:text-blue-700 font-semibold"
+              className="text-blue-600 hover:text-blue-700 font-semibold " style={{ color: '#58D68D' }}
             >
-              Login
+              로그인 하러가기
             </a>
           </p>
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import YakTokLogo from '../assets/YakTok_logo.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -40,7 +41,7 @@ export default function Login() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
+      if (!response.ok) {        
         throw new Error("Login failed");        
       }
 
@@ -62,9 +63,12 @@ export default function Login() {
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <div className="flex items-center justify-center">
+          <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
+        </div>
+        <h5 className="m-6 text-center font-bold" style={{ color: '#333' }}>어서오세요!<br/>오늘도 톡톡! 당신의 건강을 챙겨드릴게요</h5>
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Username</label>
+          <label className="block mb-1 font-medium">아이디</label>
           <input
             type="text"
             value={username}
@@ -74,7 +78,7 @@ export default function Login() {
           />
         </div>
         <div className="mb-6">
-          <label className="block mb-1 font-medium">Password</label>
+          <label className="block mb-1 font-medium">비밀번호</label>
           <input
             type="password"
             value={password}
@@ -85,16 +89,16 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-green-200 text-sm font-semibold text-gray-700 px-6 py-3 rounded-full hover:bg-green-300 transition"
         >
-          Login
+          로그인
         </button>
 
         {/* Link to signup */}
         <p className="mt-4 text-center">
-          Don't have an account?{" "}
-          <a href="/task-manager-app/#/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
-            Sign up
+          귀여운 약톡과 함께 시작해요~ {" "}
+          <a href="/task-manager-app/#/signup" className="text-blue-600 hover:text-blue-700 font-semibold " style={{ color: '#58D68D' }}>
+            약톡 가입하기
           </a>
         </p>
       </form>
