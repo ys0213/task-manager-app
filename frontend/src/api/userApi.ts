@@ -281,7 +281,7 @@ export const submitRating = async (userId:string, rating: number) => {
 export const findUsername = async (name: string, phoneNumber: string): Promise<string | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/find-username`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -307,7 +307,7 @@ export const findUsername = async (name: string, phoneNumber: string): Promise<s
 export const changePassword = async (username: string, newPassword: string): Promise<boolean> => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/change-password`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
