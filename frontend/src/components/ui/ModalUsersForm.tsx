@@ -59,7 +59,7 @@ const handleDateChange = (value: string) => {
             type="date"
             value={new Date(formData.birthDate).toISOString().substring(0, 10)}
             onChange={(e) => handleDateChange(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full bg-white border border-[#58D68D] text-[#333] px-3 py-2 rounded-xl"
           />
         </div>
 

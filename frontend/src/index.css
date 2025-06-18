@@ -68,6 +68,24 @@ input{
       color: #333;
 
 }
+
+/* 강제 복원용 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: inline-block !important;
+  opacity: 1 !important;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  width: auto;
+  height: auto;
+}
+
+input[type="date"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+}
+
 textarea{
   border-radius: 12px;
   border-color:#58D68D;

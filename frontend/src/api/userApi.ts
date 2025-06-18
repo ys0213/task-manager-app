@@ -8,6 +8,7 @@ export interface UserData {
   gender:string;
   password: string;
   // Rating:string;
+  phoneNumber: string;
 }
 
 export interface UserResponse {
@@ -23,6 +24,7 @@ export interface UserResponse {
   Age:string;
   gender:string;
   Rating:number;
+  phoneNumber: string;
 }
 
 export interface LoginCredentials {
@@ -87,7 +89,7 @@ export const createUser = async (user: UserData): Promise<UserResponse | null> =
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify(userWithAge),
     });
 
     if (!response.ok) {
@@ -107,7 +109,7 @@ export const updateUser = async (
   updatedUserData: Partial<UserResponse>
 ): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`/api/user/userUpdate/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/user/userUpdate/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -274,3 +276,52 @@ export const submitRating = async (userId:string, rating: number) => {
 
   return response.json();
 };
+
+
+export const findUsername = async (name: string, phoneNumber: string): Promise<string | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user/find-username`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, phoneNumber }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.warn("서버 응답 에러:", data?.message || "알 수 없는 오류");
+      return null;
+    }
+
+    return data.username ?? null;
+  } catch (error) {
+    console.error("아이디 찾기 오류:", error);
+    return null;
+  }
+};
+
+
+// 비밀번호 변경 (아이디로)
+export const changePassword = async (username: string, newPassword: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user/change-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, newPassword }),
+    });
+
+    if (!response.ok) {
+      throw new Error("비밀번호 변경 실패");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("비밀번호 변경 오류:", error);
+    return false;
+  }
+};
+

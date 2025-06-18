@@ -11,6 +11,7 @@ export interface IUser extends Document {
   role: "admin" | "user";
   isActive: boolean;
   rating?:number;
+  phoneNumber: string; // 추가
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -33,6 +34,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     role: { type: String, enum: ["admin", "user"], default: "user" },
     isActive: { type: Boolean, required: true, default: true },
     rating: { type: Number, default: 0, min: 0, max: 5 },
+    phoneNumber: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );

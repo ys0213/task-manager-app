@@ -1,6 +1,6 @@
 import express from "express";
 import { createUser, loginUser, getUserById, checkUsernameExists, getAlarmPillStatus, updateUserById, deactivateUser,
-    createFeedback, getAllFeedback, updateFeedback, deleteFeedback, submitRating } from "../controllers/userController";
+    createFeedback, getAllFeedback, updateFeedback, deleteFeedback, submitRating, findUsername , changePassword } from "../controllers/userController";
 
 const router = express.Router();
 
@@ -35,5 +35,9 @@ router.delete("/feedback/:id", deleteFeedback);
 
 router.post("/rating", submitRating);
 
+// 아이디 찾기 / 비밀번호 변경  api/user/find-username
+router.put('/find-username', findUsername);
+
+router.put('/change-password', changePassword);
 
 export default router;

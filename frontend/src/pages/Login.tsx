@@ -101,6 +101,22 @@ export default function Login() {
             약톡 가입하기
           </a>
         </p>
+
+        {/* 아이디 찾기 / 비밀번호 변경하기 링크 */}
+        <div className="mt-6 flex justify-center gap-6 font-bold text-[#333]">
+          <span
+            onClick={() => navigate("/findUsernamePage")}
+            className="hover:text-[#58D68D] transition"
+          >
+            아이디 찾기
+          </span>
+          <span
+            onClick={() => navigate("/changePasswordPage")}
+            className="hover:text-[#58D68D] transition"
+          >
+            비밀번호 변경하기
+          </span>
+        </div>
       </form>
     </div>
   );

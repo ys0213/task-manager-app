@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import FindUsernamePage from './pages/FindUsernamePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
 import Pills from './pages/Pills';
@@ -22,6 +24,8 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/findUsernamePage" element={<FindUsernamePage />} />
+      <Route path="/changePasswordPage" element={<ChangePasswordPage />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Base />} />
         <Route path="base" element={<Base />} />

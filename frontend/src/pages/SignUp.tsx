@@ -8,6 +8,7 @@ import YakTokLogo from '../assets/YakTok_logo.png';
 interface UserData {
   username: string;
   name: string;
+  phoneNumber: string, 
   password: string;
   confirmPassword: string;  // 비밀번호 확인 추가
   birthDate: string;
@@ -18,6 +19,7 @@ export default function SignUp() {
   const [userData, setUserData] = useState<UserData>({
     username: "",
     name: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
     birthDate: "",
@@ -89,6 +91,22 @@ export default function SignUp() {
     }
   };
 
+      const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value.replace(/\D/g, ""); // 숫자만 남김
+
+      // 하이픈 자동 삽입
+      if (value.length >= 3 && value.length <= 7) {
+        value = value.replace(/^(\d{3})(\d+)/, "$1-$2");
+      } else if (value.length > 7) {
+        value = value.replace(/^(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+      }
+
+      setUserData((prev) => ({
+        ...prev,
+        phoneNumber: value,
+      }));
+    };
+
   // 회원가입 폼 제출 처리
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +115,13 @@ export default function SignUp() {
 
     if (!isUsernameChecked || !isUsernameAvailable) {
       setErrorMessage("아이디 중복 확인을 해주세요.");
+      return;
+    }
+
+    // ✅ 전화번호 유효성 검사 추가
+    const phoneRegex = /^010-\d{4}-\d{4}$/;
+    if (!phoneRegex.test(userData.phoneNumber)) {
+      setErrorMessage("전화번호는 010-1234-5678 형식으로 입력해주세요.");
       return;
     }
 
@@ -184,6 +209,22 @@ export default function SignUp() {
             required
           />
         </div>
+
+        <div className="mb-4">
+          <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+            전화번호
+          </label>
+          <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            placeholder="010-1234-5678"
+            value={userData.phoneNumber}
+            onChange={handlePhoneNumberChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+
 
         {/* 생년월일 입력 */}
         <div className="mb-4">

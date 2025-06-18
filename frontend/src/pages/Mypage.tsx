@@ -253,6 +253,7 @@ const Mypage = () => {
         </Modal>
         
       </div>
+      
 
       <div className="flex justify-center gap-6 font-bold text-[#333]">
         <button onClick={handleLogout} className="hover:text-[#58D68D] transition">

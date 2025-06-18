@@ -12,6 +12,7 @@ interface CreateUserBody {
   name: string;
   birthDate: string;
   gender: string;
+  phoneNumber: string; // 추가
 }
 
 interface LoginUserBody {
@@ -20,13 +21,13 @@ interface LoginUserBody {
 }
 
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+const phoneRegex = /^010-\d{4}-\d{4}$/;
 // Create new User
 export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> => {
   try {
-    const { username, password, name, birthDate, gender } = req.body;
+    const { username, password, name, birthDate, gender, phoneNumber } = req.body;
 
-    if (!username || !password || !name) {
+    if (!username || !password || !name || !phoneNumber ) {
       res.status(400).json({ message: "Id, name and password are required" });
       return;
     }
@@ -34,6 +35,13 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
     if (!passwordRegex.test(password)) {
       res.status(400).json({
         message: "비밀번호는 최소 8자, 영어 알파벳/숫자/특수문자를 각각 하나 이상 포함해야 합니다."
+      });
+      return;
+    }
+
+    if (!phoneRegex.test(phoneNumber)) {
+      res.status(400).json({
+        message: "전화번호는 010-1234-5678 형식으로 입력해주세요.",
       });
       return;
     }
@@ -51,7 +59,8 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       password: hashedPassword,
       name,
       birthDate: new Date(birthDate),
-      gender
+      gender,
+      phoneNumber // 추가
     });
 
     const saved = await newUser.save();
@@ -63,7 +72,8 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
         name: saved.name,
         username: saved.username,
         birthDate: saved.birthDate,
-        gender: saved.gender
+        gender: saved.gender,
+        phoneNumber: saved.phoneNumber,
       },
     });
   } catch (err: any) {
@@ -332,3 +342,73 @@ export const submitRating = async (req: Request, res: Response) : Promise<void> 
     res.status(500).json({ message: "Rating 등록 실패", error: err });
   }
 };
+
+// PUT /api/user/:id/change-username 아이디 찾기
+export const findUsername = async (req: Request, res: Response) => {
+  try {
+    const { name, phoneNumber } = req.query;
+
+    if (!name || !phoneNumber) {
+      res.status(400).json({ message: "이름과 전화번호를 모두 입력해주세요." });
+      return;
+    }
+
+    const user = await User.findOne({
+      name,
+      phoneNumber,
+      isActive: true,
+    });
+
+    if (!user) {
+      res.status(404).json({ message: "일치하는 사용자를 찾을 수 없습니다." });
+      return;
+    }
+
+    res.status(200).json({ username: user.username });
+  } catch (error) {
+    console.error("Find Username Error:", error);
+    res.status(500).json({ message: "아이디 찾기 실패" });
+  }
+};
+
+// PUT /api/user/:id/change-password
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ message: "현재 비밀번호와 새 비밀번호가 필요합니다." });
+      return;
+    }
+
+    if (!passwordRegex.test(newPassword)) {
+      res.status(400).json({
+        message: "비밀번호는 최소 8자, 영어 알파벳/숫자/특수문자를 각각 하나 이상 포함해야 합니다.",
+      });
+      return;
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      res.status(401).json({ message: "현재 비밀번호가 일치하지 않습니다." });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "비밀번호가 성공적으로 변경되었습니다." });
+  } catch (err) {
+    console.error("비밀번호 변경 오류:", err);
+    res.status(500).json({ message: "비밀번호 변경 실패" });
+  }
+};
+
