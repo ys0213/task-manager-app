@@ -23,55 +23,80 @@ interface NavLinksProps {
 const NavLinks = ({ onClick, user }: NavLinksProps) => {
 
     const location = useLocation();
+    const navigate = useNavigate();
     const currentPath = location.pathname;
 
     const baseMenuClass =
         "flex items-center px-8 py-1 my-4 rounded-lg transition-colors hover:bg-[#58D68D]/50";
     const activeClass = "bg-[#58D68D] font-bold";
 
+    const handleProtectedClick = (path: string) => {
+    onClick();
+    if (!user) {
+        navigate("/login");
+    } else {
+        navigate(path);
+    }
+    };
 
     return (
     <>
-        {!user ? (
-        <Link to="/login" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/login" ? activeClass : ""}`}>
-            <span className="p-2"><KeyRound className="w-6 h-6 text-[#333333]" /></span>
-            <span>LOGIN</span>
-        </Link>
-        ) : (
-        <Link to="/home" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/home" ? activeClass : ""}`}>
-            <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
-            <span>HOME</span>
-        </Link>
-        )}
-        <Link to="/base" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/base" ? activeClass : ""}`}>
-            <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
-            <span>로그인전 HOME 화면</span>
-        </Link>
-        <Link to="/dashboard" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/dashboard" ? activeClass : ""}`}>
-            <span className="p-2"><Pill className="w-6 h-6 text-[#333333]" /></span>
-            <span>약 정보</span>
-        </Link>
-        <Link to="/pillsCalendar" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/pillsCalendar" ? activeClass : ""}`}>
-            <span className="p-2"><Calendar className="w-6 h-6 text-[#333333]" /></span>
-            <span>달력</span>
-        </Link>
-        <Link to="/mypage" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}>
-            <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
-            <span>마이페이지</span>
-        </Link>
-        {user&&user.role === "admin" && (
-        <Link to="/adminBase" onClick={onClick} 
-        className={`${baseMenuClass} ${currentPath === "/adminBase" ? activeClass : ""}`}>
-            <span className="p-2"><ShieldUser className="w-6 h-6 text-[#333333]" /></span>
-            <span>관리자 페이지</span>
-        </Link>
-        )}
+    {/* 로그인한 경우: HOME 메뉴 */}
+    {user && (
+        <div
+        onClick={() => handleProtectedClick("/home")}
+        className={`${baseMenuClass} ${currentPath === "/home" ? activeClass : ""}`}
+        >
+        <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">HOME</span>
+        </div>
+    )}
+
+    {/* 로그인하지 않은 경우: 로그인전 HOME 화면 메뉴 */}
+    {!user && (
+        <div
+        onClick={() => navigate("/base")}
+        className={`${baseMenuClass} ${currentPath === "/base" ? activeClass : ""}`}
+        >
+        <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">로그인전 HOME 화면</span>
+        </div>
+    )}
+
+    {/* 다른 메뉴들 (로그인 안 했으면 클릭 시 /login으로 리디렉션) */}
+    <div
+        onClick={() => handleProtectedClick("/dashboard")}
+        className={`${baseMenuClass} ${currentPath === "/dashboard" ? activeClass : ""}`}
+    >
+        <span className="p-2"><Pill className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">약 정보</span>
+    </div>
+
+    <div
+        onClick={() => handleProtectedClick("/pillsCalendar")}
+        className={`${baseMenuClass} ${currentPath === "/pillsCalendar" ? activeClass : ""}`}
+    >
+        <span className="p-2"><Calendar className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">달력</span>
+    </div>
+
+    <div
+        onClick={() => handleProtectedClick("/mypage")}
+        className={`${baseMenuClass} ${currentPath === "/mypage" ? activeClass : ""}`}
+    >
+        <span className="p-2"><Settings className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">마이페이지</span>
+    </div>
+
+    {user?.role === "admin" && (
+        <div
+        onClick={() => handleProtectedClick("/adminBase")}
+        className={`${baseMenuClass} ${currentPath === "/adminBase" ? activeClass : ""}`}
+        >
+        <span className="p-2"><ShieldUser className="w-6 h-6 text-[#333333]" /></span>
+        <span className="text-[#333333]">관리자 페이지</span>
+        </div>
+    )}
     </>
     );
 };
@@ -100,6 +125,7 @@ const Layout = () => {
     }, []);
 
     const navigate = useNavigate();
+    const stored = localStorage.getItem("user");
 
     return (
     <div className="min-h-screen bg-white flex justify-center px-[calc(100%/12)] ">
@@ -109,9 +135,12 @@ const Layout = () => {
             <header className="flex w-full items-center justify-between h-20 bg-white ">
                 {/* App title 3그리드 */}
                 <h1 className="w-64 bg-[#B0EDCA] logo-title">
-                    <Link to="/home" className="flex justify-center items-center">
-                    <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
-                    </Link>
+                    <div
+                    onClick={() => navigate(user ? "/home" : "/base")}
+                    className="flex justify-center items-center cursor-pointer"
+                    >
+                    <img src={YakTokLogo} alt="약톡logo" className="h-20" />
+                    </div>
                 </h1>
                 {/* User profile and notification 7그리드 */}
                 <div className="flex w-full max-w-screen-md px-5 pb-2 justify-end">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import YakTokLogo from '../assets/YakTok_logo.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -57,6 +57,9 @@ export default function Login() {
     }
   };
 
+  const stored = localStorage.getItem("user");
+  const user = stored ? JSON.parse(stored) : null;
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form
@@ -64,7 +67,12 @@ export default function Login() {
         className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md"
       >
         <div className="flex items-center justify-center">
-          <img src={YakTokLogo} alt="약톡logo" className="h-20"/>
+          <div
+            onClick={() => navigate(user ? "/home" : "/base")}
+            className="flex justify-center items-center cursor-pointer"
+          >
+            <img src={YakTokLogo} alt="약톡logo" className="h-20" />
+          </div>
         </div>
         <h5 className="m-6 text-center font-bold" style={{ color: '#333' }}>어서오세요!<br/>오늘도 톡톡! 당신의 건강을 챙겨드릴게요</h5>
         <div className="mb-4">

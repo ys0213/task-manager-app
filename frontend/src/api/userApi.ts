@@ -279,7 +279,7 @@ export const submitRating = async (userId:string, rating: number) => {
 
 
 export const findUsername = async (name: string, phoneNumber: string): Promise<string | null> => {
-  // console.log(name,phoneNumber)
+  console.log(name,phoneNumber)
   try {
     const response = await fetch(`${API_BASE_URL}/user/find-username`, {
       method: "POST",

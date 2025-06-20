@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
       <div>
           <AddButton
             onClick={() => setIsModalOpen(true)}
-            className="cursor-pointer"
+            className="cursor-pointer mb-6"
             showPlusIcon>
             새로운 약 추가하기
           </AddButton>
@@ -209,7 +209,7 @@ const Dashboard: React.FC = () => {
           
       </div>
       {/* 약 리스트 */}
-      <h4 className="font-bold m-1">복용 리스트</h4>
+      <h4 className="font-bold m-2">복용 리스트</h4>
       <div>
         {pills
           .filter((pill) => pill.isCurrentlyUsed)

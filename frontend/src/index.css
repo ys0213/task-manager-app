@@ -69,7 +69,7 @@ input{
 
 }
 
-/* 강제 복원용 */
+/* 강제 복원용
 input[type="date"]::-webkit-calendar-picker-indicator {
   display: inline-block !important;
   opacity: 1 !important;
@@ -78,13 +78,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   width: auto;
   height: auto;
-}
+  appearance: auto;
+  padding-right: 40px;
+
+} */
 
 input[type="date"] {
-  appearance: auto;
-  -webkit-appearance: auto;
-  -moz-appearance: auto;
+  position: relative;
+  height: 40px;
+  font-size: 16px;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  filter: invert(93%) sepia(14%) saturate(337%) hue-rotate(84deg) brightness(98%) contrast(96%);
+}
+
 
 textarea{
   border-radius: 12px;
@@ -114,7 +125,6 @@ select{
   body {
     background-color: #f6f7f9;
     margin: 0;
-    background-color: #f7f9fc;
     color: #333;
   }
 
@@ -222,6 +232,9 @@ select{
   .logo-title{
     background: #fff;
   }
+  
+}
+.span{
   
 }
 
