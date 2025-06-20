@@ -279,23 +279,24 @@ export const submitRating = async (userId:string, rating: number) => {
 
 
 export const findUsername = async (name: string, phoneNumber: string): Promise<string | null> => {
+  // console.log(name,phoneNumber)
   try {
     const response = await fetch(`${API_BASE_URL}/user/find-username`, {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name, phoneNumber }),
     });
-
-    const data = await response.json();
+    console.log(response)
 
     if (!response.ok) {
-      console.warn("서버 응답 에러:", data?.message || "알 수 없는 오류");
-      return null;
+      const errorData = await response.json();
+      throw new Error(errorData.message || "아이디 찾기 실패");
     }
 
-    return data.username ?? null;
+    const data = await response.json();
+    return data.username || null;
   } catch (error) {
     console.error("아이디 찾기 오류:", error);
     return null;

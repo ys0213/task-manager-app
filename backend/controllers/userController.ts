@@ -343,21 +343,17 @@ export const submitRating = async (req: Request, res: Response) : Promise<void> 
   }
 };
 
-// PUT /api/user/:id/change-username 아이디 찾기
-export const findUsername = async (req: Request, res: Response) => {
+export const findUsername = async (req: Request, res: Response): Promise<void> => {
+  // console.log(req.body)  -> 여기도 불러오지 못함
   try {
-    const { name, phoneNumber } = req.query;
+    const { name, phoneNumber } = req.body;
 
     if (!name || !phoneNumber) {
       res.status(400).json({ message: "이름과 전화번호를 모두 입력해주세요." });
       return;
     }
 
-    const user = await User.findOne({
-      name,
-      phoneNumber,
-      isActive: true,
-    });
+    const user = await User.findOne({ name, phoneNumber, isActive: true });
 
     if (!user) {
       res.status(404).json({ message: "일치하는 사용자를 찾을 수 없습니다." });
@@ -365,9 +361,9 @@ export const findUsername = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ username: user.username });
-  } catch (error) {
-    console.error("Find Username Error:", error);
-    res.status(500).json({ message: "아이디 찾기 실패" });
+  } catch (err) {
+    console.error("아이디 찾기 오류 여긴 controller:", err);
+    res.status(500).json({ message: "아이디 찾기에 실패했습니다." });
   }
 };
 
