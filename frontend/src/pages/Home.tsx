@@ -43,7 +43,6 @@ const Home: React.FC = () => {
     const fetchPills = async ( userId:string ) => {
     try {
         const res = await homeUserPills(userId); // [{ ...pill, takenHistory: [...] }]
-        console.log(res);
         const processed: PillCard[] = [];
 
         const todayDate = new Date().toISOString().split("T")[0];
@@ -104,8 +103,8 @@ const Home: React.FC = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserName(parsedUser.name);
-      setUserId(parsedUser.id);
-      fetchPills(parsedUser.id);
+      setUserId(parsedUser.id?parsedUser.id:parsedUser._id);
+      fetchPills(parsedUser.id?parsedUser.id:parsedUser._id);
     }
   }, []);
 

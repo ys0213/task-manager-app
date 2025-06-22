@@ -150,7 +150,7 @@ const Mypage = () => {
       const updatedUser = await fetchUser(userId);
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-
+      
       alert("평가가 등록되었습니다.");
       setIsRatingModalOpen(false);
     } catch (error: any) {
