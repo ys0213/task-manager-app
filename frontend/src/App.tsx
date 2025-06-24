@@ -22,21 +22,24 @@ const App = () => {
   const stored = localStorage.getItem("user");
   const user = stored ? JSON.parse(stored) : null;  
   return (
-    <Routes>
+<Routes>
       <Route path="/" element={<Navigate to={user ? "/home" : "/base"} replace />} />
       
       <Route path="/" element={<Layout />}>
-          <Route path="base" element={<Base />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="pills" element={<Pills />} />
-          <Route path="home" element={<Home />} />
-          <Route path="pillsCalendar" element={<PillsCalendar />} />
-          <Route path="mypage" element={<Mypage />} />
-          <Route path="pills/:id" element={<PillDetail />} />
-          <Route path="adminBase" element={<AdminBase />} />
-          <Route path="admin/users" element={<AdminUsers />} />
-          <Route path="admin/pills" element={<AdminPills />} />
-          <Route path="feedbackBoard" element={<FeedbackBoard />} />
+        <Route path="base" element={<Base />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="pills" element={<Pills />} />
+
+        {/* user 있을 때만 Home 라우트 렌더 */}
+        {user && <Route path="home" element={<Home />} />}
+        
+        <Route path="pillsCalendar" element={<PillsCalendar />} />
+        <Route path="mypage" element={<Mypage />} />
+        <Route path="pills/:id" element={<PillDetail />} />
+        <Route path="adminBase" element={<AdminBase />} />
+        <Route path="admin/users" element={<AdminUsers />} />
+        <Route path="admin/pills" element={<AdminPills />} />
+        <Route path="feedbackBoard" element={<FeedbackBoard />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

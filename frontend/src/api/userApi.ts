@@ -307,16 +307,17 @@ export const findUsername = async (name: string, phoneNumber: string): Promise<s
 // 비밀번호 변경 (아이디로)
 export const changePassword = async (username: string, newPassword: string): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user/change-password`, {
+    const response = await fetch(`${API_BASE_URL}/user/change-password/${username}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, newPassword }),
+      body: JSON.stringify({ newPassword }), // username은 경로로, body에는 newPassword만
     });
 
     if (!response.ok) {
-      throw new Error("비밀번호 변경 실패");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "비밀번호 변경 실패");
     }
 
     return true;

@@ -344,7 +344,6 @@ export const submitRating = async (req: Request, res: Response) : Promise<void> 
 };
 
 export const findUsername = async (req: Request, res: Response): Promise<void> => {
-  // console.log(req.body)  -> 여기도 불러오지 못함
   try {
     const { name, phoneNumber } = req.body;
 
@@ -370,11 +369,11 @@ export const findUsername = async (req: Request, res: Response): Promise<void> =
 // PUT /api/user/:id/change-password
 export const changePassword = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const { currentPassword, newPassword } = req.body;
+    const { username } = req.params;
+    const { newPassword } = req.body;
 
-    if (!currentPassword || !newPassword) {
-      res.status(400).json({ message: "현재 비밀번호와 새 비밀번호가 필요합니다." });
+    if (!newPassword) {
+      res.status(400).json({ message: "새 비밀번호가 필요합니다." });
       return;
     }
 
@@ -385,15 +384,9 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    const user = await User.findById(id);
+    const user = await User.findOne({ username });
     if (!user) {
       res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-      return;
-    }
-
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      res.status(401).json({ message: "현재 비밀번호가 일치하지 않습니다." });
       return;
     }
 
@@ -407,4 +400,46 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: "비밀번호 변경 실패" });
   }
 };
+
+
+// PUT /api/user/:id/change-password
+// export const changePassword = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { id } = req.params;
+//     const { currentPassword, newPassword } = req.body;
+
+//     if (!currentPassword || !newPassword) {
+//       res.status(400).json({ message: "현재 비밀번호와 새 비밀번호가 필요합니다." });
+//       return;
+//     }
+
+//     if (!passwordRegex.test(newPassword)) {
+//       res.status(400).json({
+//         message: "비밀번호는 최소 8자, 영어 알파벳/숫자/특수문자를 각각 하나 이상 포함해야 합니다.",
+//       });
+//       return;
+//     }
+
+//     const user = await User.findById(id);
+//     if (!user) {
+//       res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+//       return;
+//     }
+
+//     const isMatch = await bcrypt.compare(currentPassword, user.password);
+//     if (!isMatch) {
+//       res.status(401).json({ message: "현재 비밀번호가 일치하지 않습니다." });
+//       return;
+//     }
+
+//     const hashedPassword = await bcrypt.hash(newPassword, 10);
+//     user.password = hashedPassword;
+//     await user.save();
+
+//     res.status(200).json({ message: "비밀번호가 성공적으로 변경되었습니다." });
+//   } catch (err) {
+//     console.error("비밀번호 변경 오류:", err);
+//     res.status(500).json({ message: "비밀번호 변경 실패" });
+//   }
+// };
 

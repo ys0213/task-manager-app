@@ -36,8 +36,8 @@ router.delete("/feedback/:id", deleteFeedback);
 router.post("/rating", submitRating);
 
 // 아이디 찾기 / 비밀번호 변경  api/user/find-username
-router.post('/find-username', findUsername);
 
-router.put('/change-password', changePassword);
+router.put('/user/change-password/:username', changePassword);
+
 
 export default router;

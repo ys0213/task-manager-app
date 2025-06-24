@@ -145,7 +145,9 @@ const Mypage = () => {
 
   const handleRatingSubmit = async (rating: number) => {
     try {
+      console.log(userId, rating);
       await submitRating(userId, rating);
+      
 
       const updatedUser = await fetchUser(userId);
       setUser(updatedUser);

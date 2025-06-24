@@ -173,9 +173,9 @@ const Layout = () => {
 
                   {/* Bottom Navigation (Mobile only) */}
                     <nav className="bottom-nav-mobile">
-                        <Link to="/home">
+                        <div onClick={() => navigate(user ? "/home" : "/base")} className="cursor-pointer">
                             <Home />
-                        </Link>
+                        </div>
                         <Link to="/dashboard">
                             <Pill />
                         </Link>
