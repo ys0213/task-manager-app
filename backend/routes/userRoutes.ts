@@ -1,6 +1,6 @@
 import express from "express";
 import { createUser, loginUser, getUserById, checkUsernameExists, getAlarmPillStatus, updateUserById, deactivateUser,
-    createFeedback, getAllFeedback, updateFeedback, deleteFeedback, submitRating, findUsername , changePassword } from "../controllers/userController";
+    createFeedback, getAllFeedback, updateFeedback, deleteFeedback, submitRating, findUsername , changePassword, checkPhoneNumber } from "../controllers/userController";
 
 const router = express.Router();
 
@@ -12,6 +12,8 @@ router.post("/login", loginUser);
 
 // username duplicate check
 router.get("/check-username", checkUsernameExists);
+
+router.get("/check-phone/:phoneNumber", checkPhoneNumber);
 
 // GET /api/user/:id - Get user by ID
 router.get("/by-id/:id", getUserById);
@@ -37,7 +39,9 @@ router.post("/rating", submitRating);
 
 // 아이디 찾기 / 비밀번호 변경  api/user/find-username
 
-router.put('/user/change-password/:username', changePassword);
+router.post('/find-username', findUsername);
+
+router.put('/change-password/:username', changePassword);
 
 
 export default router;

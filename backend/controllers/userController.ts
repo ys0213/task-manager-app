@@ -46,9 +46,16 @@ export const createUser = async (req: Request<{}, {}, CreateUserBody>, res: Resp
       return;
     }
 
+    {/* 아이디 중복검사 & 전화번호 중복검사 */}
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       res.status(409).json({ message: "Id already registered" });
+      return;
+    }
+
+    const existingPhone = await User.findOne({ phoneNumber });
+    if (existingPhone) {
+      res.status(409).json({ message: "이미 등록된 전화번호입니다." });
       return;
     }
 
@@ -169,6 +176,19 @@ export const checkUsernameExists = async(req: Request, res: Response): Promise<v
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+// 전화번호 중복 확인
+export const checkPhoneNumber = async (req: Request, res: Response): Promise<void> => {
+  const { phoneNumber } = req.params;
+
+  try {
+    const exists = await User.exists({ phoneNumber });
+    res.status(200).json({ exists: !!exists });
+  } catch (error) {
+    console.error("전화번호 중복 확인 오류:", error);
+    res.status(500).json({ message: "전화번호 중복 확인 중 서버 오류가 발생했습니다." });
+  }
+};
 
 
 export const getAlarmPillStatus = async (req: Request, res: Response) => {
@@ -368,31 +388,22 @@ export const findUsername = async (req: Request, res: Response): Promise<void> =
 
 // PUT /api/user/:id/change-password
 export const changePassword = async (req: Request, res: Response): Promise<void> => {
-  try {
     const { username } = req.params;
     const { newPassword } = req.body;
 
-    if (!newPassword) {
-      res.status(400).json({ message: "새 비밀번호가 필요합니다." });
-      return;
-    }
-
-    if (!passwordRegex.test(newPassword)) {
-      res.status(400).json({
-        message: "비밀번호는 최소 8자, 영어 알파벳/숫자/특수문자를 각각 하나 이상 포함해야 합니다.",
-      });
-      return;
-    }
-
-    const user = await User.findOne({ username });
-    if (!user) {
-      res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-      return;
-    }
-
+    // console.log("username:", username);
+    // console.log("req.body:", req.body);
+try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
+
+    const result = await User.updateOne(
+      { username },
+      { $set: { password: hashedPassword } }
+    );
+
+    if (result.matchedCount === 0 || result.modifiedCount === 0) {
+      res.status(404).json({ message: "사용자를 찾을 수 없거나 비밀번호가 변경되지 않았습니다." });
+    }
 
     res.status(200).json({ message: "비밀번호가 성공적으로 변경되었습니다." });
   } catch (err) {

@@ -35,11 +35,26 @@ export default function FindUsernamePage() {
             />
 
             <input
-                type="tel"
-                placeholder="전화번호 (예: 010-1234-5678)"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full border p-2 mb-3 rounded"
+              type="tel"
+              placeholder="전화번호 (예: 010-1234-5678)"
+              value={phoneNumber}
+              onChange={(e) => {
+                let input = e.target.value.replace(/\D/g, ''); // 숫자만 남기기
+
+                // 전화번호 형식으로 변환
+                if (input.length <= 3) {
+                  input = input;
+                } else if (input.length <= 7) {
+                  input = input.slice(0, 3) + '-' + input.slice(3);
+                } else if (input.length <= 11) {
+                  input = input.slice(0, 3) + '-' + input.slice(3, 7) + '-' + input.slice(7);
+                } else {
+                  input = input.slice(0, 3) + '-' + input.slice(3, 7) + '-' + input.slice(7, 11);
+                }
+
+                setPhoneNumber(input);
+              }}
+              className="w-full border p-2 mb-3 rounded"
             />
 
             <button

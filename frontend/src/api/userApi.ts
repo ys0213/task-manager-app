@@ -157,6 +157,15 @@ export async function checkUsernameExists(username: string): Promise<boolean> {
   return data.exists;
 }
 
+// API: 전화번호 중복 확인
+export async function checkPhoneNumberExists(phoneNumber: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE_URL}/user/check-phone/${encodeURIComponent(phoneNumber)}`);
+  if (!res.ok) throw new Error("전화번호 중복 확인 실패");
+  const data = await res.json();
+  return data.exists; // true이면 중복됨
+};
+
+
 
 // 유저 탈퇴
 export const deactivateUser = async (userId: string): Promise<boolean> => {
@@ -279,7 +288,6 @@ export const submitRating = async (userId:string, rating: number) => {
 
 
 export const findUsername = async (name: string, phoneNumber: string): Promise<string | null> => {
-  console.log(name,phoneNumber)
   try {
     const response = await fetch(`${API_BASE_URL}/user/find-username`, {
       method: "POST",
@@ -288,7 +296,6 @@ export const findUsername = async (name: string, phoneNumber: string): Promise<s
       },
       body: JSON.stringify({ name, phoneNumber }),
     });
-    console.log(response)
 
     if (!response.ok) {
       const errorData = await response.json();

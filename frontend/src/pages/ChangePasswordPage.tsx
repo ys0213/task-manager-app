@@ -19,8 +19,13 @@ export default function ChangePasswordPage() {
       return;
     }
 
-    const success = await changePassword(username, newPassword); // ✅ API 함수 사용
+      if (!username) {
+    alert("아이디를 입력해주세요.");
+    return;
+  }
 
+    const success = await changePassword(username, newPassword); // ✅ API 함수 사용
+    // console.log(username, newPassword)
     if (success) {
       alert("비밀번호가 성공적으로 변경되었습니다.");
       navigate("/login");

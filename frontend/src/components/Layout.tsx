@@ -59,7 +59,7 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
         className={`${baseMenuClass} ${currentPath === "/base" ? activeClass : ""}`}
         >
         <span className="p-2"><Home className="w-6 h-6 text-[#333333]" /></span>
-        <span className="text-[#333333]">로그인전 HOME 화면</span>
+        <span className="text-[#333333]">HOME</span>
         </div>
     )}
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser, checkUsernameExists } from "../api/userApi";
+import { createUser, checkUsernameExists, checkPhoneNumberExists } from "../api/userApi";
 import YakTokLogo from '../assets/YakTok_logo.png';
 
 
@@ -32,6 +32,10 @@ export default function SignUp() {
   const [isUsernameChecked, setIsUsernameChecked] = useState(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [usernameCheckError, setUsernameCheckError] = useState<string>("");
+
+  const [phoneNumberCheckError, setPhoneNumberCheckError] = useState("");
+  const [isPhoneNumberChecked, setIsPhoneNumberChecked] = useState(false);
+  const [isPhoneNumberAvailable, setIsPhoneNumberAvailable] = useState(false);
 
   const navigate = useNavigate();
 
@@ -90,6 +94,34 @@ export default function SignUp() {
       setIsUsernameAvailable(false);
     }
   };
+
+  // 전화번호 중복 확인 함수
+  const handlePhoneNumberCheck = async () => {
+    setPhoneNumberCheckError("");
+    setIsPhoneNumberChecked(false);
+    setIsPhoneNumberAvailable(false);
+
+    if (!/^010-\d{4}-\d{4}$/.test(userData.phoneNumber)) {
+      setPhoneNumberCheckError("전화번호는 010-1234-5678 형식이어야 합니다.");
+      return;
+    }
+
+    try {
+      const exists = await checkPhoneNumberExists(userData.phoneNumber);
+      if (exists) {
+        setPhoneNumberCheckError("이미 등록된 전화번호입니다.");
+        setIsPhoneNumberAvailable(false);
+      } else {
+        setIsPhoneNumberAvailable(true);
+      }
+      setIsPhoneNumberChecked(true);
+    } catch (error) {
+      setPhoneNumberCheckError("전화번호 중복 확인 중 오류가 발생했습니다.");
+      setIsPhoneNumberChecked(false);
+      setIsPhoneNumberAvailable(false);
+    }
+  };
+
 
       const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value.replace(/\D/g, ""); // 숫자만 남김
@@ -210,19 +242,41 @@ export default function SignUp() {
           />
         </div>
 
+        {/* 폰번호 입력 중복 검사까지 */}
         <div className="mb-4">
-          <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700">
             전화번호
           </label>
-          <input
-            type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            placeholder="010-1234-5678"
-            value={userData.phoneNumber}
-            onChange={handlePhoneNumberChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-          />
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="010-1234-5678"
+              value={userData.phoneNumber}
+              onChange={handlePhoneNumberChange}
+              className="flex-grow p-2 border rounded-lg"
+              required
+            />
+            <button
+              type="button"
+              onClick={handlePhoneNumberCheck}
+              disabled={userData.phoneNumber.length < 13}
+              className={`px-4 py-2 rounded-lg border ${
+                userData.phoneNumber.length < 13
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-green-200 font-semibold text-gray-700 hover:bg-green-300"
+              } transition`}
+            >
+              중복확인
+            </button>
+          </div>
+            {/* 중복확인 에러 or 성공 메시지 */}
+            {phoneNumberCheckError && (
+              <p className="text-red-600 text-sm mt-1">{phoneNumberCheckError}</p>
+            )}
+            {!phoneNumberCheckError && isPhoneNumberChecked && isPhoneNumberAvailable && (
+              <p className="text-green-600 text-sm mt-1">사용 가능한 전화번호입니다.</p>
+            )}
         </div>
 
 
