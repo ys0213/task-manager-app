@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface UserFormData {
   id: string;
@@ -13,68 +15,68 @@ interface UserFormData {
 
 interface ModalUsersFormProps {
   formData: UserFormData | null;
-  onChange: ( field: keyof UserFormData, value: any ) => void;
+  onChange: (field: keyof UserFormData, value: any) => void;
 }
 
-
 const ModalUsersForm: React.FC<ModalUsersFormProps> = ({ formData, onChange }) => {
-if (!formData) return null;
+  if (!formData) return null;
 
-  const [editUser, setEditUser] = useState<UserFormData | null>(null);
   const [error, setError] = useState("");
 
-
-const handleDateChange = (value: string) => {
-  const date = new Date(value);
-  setEditUser((prev) => (prev ? { ...prev, birthDate: date } : prev));
-  onChange("birthDate", date); // 상위 상태에도 반영
-};
-
-
+  const handleDateChange = (date: Date | null) => {
+    if (!date) return;
+    onChange("birthDate", date);
+  };
 
   return (
     <div className="space-y-6 text-sm text-[#333]">
-        <h2 className="text-xl font-bold mb-4">사용자 정보 수정</h2>
+      <h2 className="text-xl font-bold mb-4">사용자 정보 수정</h2>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <div>
-          <label className="block text-sm font-medium">아이디</label>
-          <p className="text-gray-700">{formData.username}</p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">이름</label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => onChange("name", e.target.value)}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">생일</label>
-          <input
-            type="date"
-            value={new Date(formData.birthDate).toISOString().substring(0, 10)}
-            onChange={(e) => handleDateChange(e.target.value)}
-            className="w-full bg-white border border-[#58D68D] text-[#333] px-3 py-2 rounded-xl"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">성별</label>
-          <select
-            value={formData.gender}
-            onChange={(e) => onChange("gender", e.target.value)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="male">남자</option>
-            <option value="female">여자</option>
-          </select>
-        </div>
+      <div>
+        <label className="block text-sm font-medium">아이디</label>
+        <p className="text-gray-700">{formData.username}</p>
       </div>
+
+      <div>
+        <label className="block text-sm font-medium">이름</label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => onChange("name", e.target.value)}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">생일</label>
+        <DatePicker
+          selected={new Date(formData.birthDate)}
+          onChange={handleDateChange}
+          dateFormat="yyyy-MM-dd"
+          maxDate={new Date()}
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          placeholderText="YYYY-MM-DD"
+          className="w-full bg-white border border-[#58D68D] text-[#333] px-3 py-2 rounded-xl"
+          wrapperClassName="w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">성별</label>
+        <select
+          value={formData.gender}
+          onChange={(e) => onChange("gender", e.target.value)}
+          className="w-full border p-2 rounded"
+        >
+          <option value="male">남자</option>
+          <option value="female">여자</option>
+        </select>
+      </div>
+    </div>
   );
 };
 

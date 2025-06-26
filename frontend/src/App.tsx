@@ -30,8 +30,10 @@ const App = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="pills" element={<Pills />} />
 
-        {/* user 있을 때만 Home 라우트 렌더 */}
-        {user && <Route path="home" element={<Home />} />}
+        <Route path="home" element={user ? <Home /> : <Navigate to="/login" replace />} />
+
+        {/* user 있을 때만 Home 라우트 렌더 _ 기존 렌더방식인데 추후 구현 확인하고 삭제
+        {user && <Route path="home" element={<Home />} />} */}
         
         <Route path="pillsCalendar" element={<PillsCalendar />} />
         <Route path="mypage" element={<Mypage />} />

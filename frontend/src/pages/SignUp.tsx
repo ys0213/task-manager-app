@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser, checkUsernameExists, checkPhoneNumberExists } from "../api/userApi";
 import YakTokLogo from '../assets/YakTok_logo.png';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 // 사용자 데이터 타입 정의
@@ -11,7 +13,7 @@ interface UserData {
   phoneNumber: string, 
   password: string;
   confirmPassword: string;  // 비밀번호 확인 추가
-  birthDate: string;
+  birthDate: Date | null;
   gender: string;
 }
 
@@ -22,7 +24,7 @@ export default function SignUp() {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    birthDate: "",
+    birthDate: null,
     gender: "",
   });
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -42,6 +44,7 @@ export default function SignUp() {
   // 입력값 변경 처리
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+  
     setUserData((prev) => ({
       ...prev,
       [name]: value,
@@ -163,7 +166,10 @@ export default function SignUp() {
       return;
     }
 
-    const result = await createUser(userData);
+    const result = await createUser({
+      ...userData,
+      birthDate: userData.birthDate?.toISOString().split("T")[0] ?? "", // "YYYY-MM-DD" 형식
+    });
 
     if (result) {
       // 가입 성공 -> 로그인 페이지로 이동
@@ -283,12 +289,18 @@ export default function SignUp() {
         {/* 생년월일 입력 */}
         <div className="mb-4">
           <label className="block mb-1 font-medium">생년월일</label>
-          <input
-            type="date"
-            name="birthDate"
-            value={userData.birthDate}
-            onChange={handleChange}
+          <DatePicker
+            selected={userData.birthDate}
+            onChange={(date: Date | null) =>
+              setUserData((prev) => ({ ...prev, birthDate: date }))
+            }
+            dateFormat="yyyy-MM-dd"
+            maxDate={new Date()}
+            showYearDropdown
+            showMonthDropdown
+            placeholderText="YYYY-MM-DD"
             className="w-full p-2 border rounded-lg"
+            wrapperClassName="w-full"
             required
           />
         </div>
