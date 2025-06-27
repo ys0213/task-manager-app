@@ -1,5 +1,6 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route , Navigate} from 'react-router-dom';
+import './index.css';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -17,8 +18,21 @@ import AdminBase from './pages/AdminBase';
 import AdminUsers from './pages/AdminUsers';
 import AdminPills from './pages/AdminPills';
 import FeedbackBoard from './pages/FeedbackBoard'
+import LoadingPage from './pages/LoadingPage';
+
 
 const App = () => {
+  const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <LoadingPage />;
+  }
+
   const stored = localStorage.getItem("user");
   const user = stored ? JSON.parse(stored) : null;  
   return (
