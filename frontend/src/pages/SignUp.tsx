@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser, checkUsernameExists, checkPhoneNumberExists } from "../api/userApi";
 import YakTokLogo from '../assets/YakTok_logo.png';
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ko } from "date-fns/locale";
 
+registerLocale("ko", ko); // ⬅ locale 등록
 
 // 사용자 데이터 타입 정의
 interface UserData {
@@ -296,9 +298,11 @@ export default function SignUp() {
             }
             dateFormat="yyyy-MM-dd"
             maxDate={new Date()}
+            minDate={new Date("1900-01-01")}
             showYearDropdown
             showMonthDropdown
             placeholderText="YYYY-MM-DD"
+            locale="ko"
             className="w-full p-2 border rounded-lg"
             wrapperClassName="w-full"
             required

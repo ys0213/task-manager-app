@@ -1,40 +1,39 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import  SnakePillGame from "./Game_Snake";
-
+import QuizWithCharacter from "../components/ui/QuizWithCharacter";
+import { User } from "lucide-react";
 
 const Base = () => {
-  // const [user, setUser] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem("user");
-  //   if (stored) {
-  //     try {
-  //       const parsed = JSON.parse(stored);
-  //       if (parsed.name) {
-  //         setUser(parsed.name);
-  //         // 로그인된 사용자는 대시보드나 메인으로 리디렉션
-  //         navigate("/home");
-  //       }
-  //     } catch (e) {
-  //       console.error("Failed to parse user from localStorage", e);
-  //     }
-  //   }
-  // }, [navigate]);
-
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold mb-4">환영합니다!</h2>
-      <p className="text-lg">처음 오셨습니까?</p>
-      <Button
-        onClick={() => navigate("/login")}
-        className="mt-4 px-4 py-2 text-sm"
-      >
-        로그인하러 가기
-      </Button>
-      <SnakePillGame />
+    <div className="relative min-h-screen flex flex-col bg-white">
+
+      {/* 메인 컨텐츠 */}
+      <div className="w-full px-6">
+        <h3 className="text-2xl font-bold text-gray-800 mb-3">
+          안녕하세요! <span className="text-[#58D68D]">약톡</span>에 오신 걸 환영해요!
+        </h3>
+        <p className="text-gray-600 text-sm mb-1">
+          건강은 소중하니까, 저와 함께 재미있게 약 챙기기 습관을 만들어봐요~
+        </p>
+        <p className="text-gray-600 text-sm mb-3">
+          먼저, 작은 퀴즈로 두뇌도 깨워볼까요? 틀려도 괜찮아요. 같이 배워가면 되니까요!
+        </p>
+
+        {/* 미니 퀴즈 / 게임 */}
+        <QuizWithCharacter />
+
+        <div className="flex items-center justify-center mt-6 space-x-3">
+          <p className="text-gray-800 font-medium">약톡과 함께 건강한 습관을 만들어요!</p>
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-[#58D68D] text-white font-semibold px-5 py-2 rounded-full hover:bg-[#45c779] transition"
+          >
+            로그인 하러가기
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

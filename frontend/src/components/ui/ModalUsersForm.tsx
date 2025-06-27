@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ko } from "date-fns/locale"; 
+
+registerLocale("ko", ko); 
 
 interface UserFormData {
   id: string;
@@ -50,16 +53,18 @@ const ModalUsersForm: React.FC<ModalUsersFormProps> = ({ formData, onChange }) =
       </div>
 
       <div>
-        <label className="block text-sm font-medium">생일</label>
+        <label className="block text-sm font-medium">생년월일</label>
         <DatePicker
           selected={new Date(formData.birthDate)}
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
           maxDate={new Date()}
-          showMonthDropdown
+          minDate={new Date("1900-01-01")}
           showYearDropdown
-          dropdownMode="select"
+          showMonthDropdown
           placeholderText="YYYY-MM-DD"
+          locale="ko"
+          dropdownMode="select"
           className="w-full bg-white border border-[#58D68D] text-[#333] px-3 py-2 rounded-xl"
           wrapperClassName="w-full"
         />
