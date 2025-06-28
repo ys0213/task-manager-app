@@ -40,6 +40,10 @@ app.get("/", (req: Request, res: Response): void => {
   res.send("API is running...");
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // MongoDB connection
 const mongoUri: string = process.env.MONGO_URI ?? "";
 if (!mongoUri) {
