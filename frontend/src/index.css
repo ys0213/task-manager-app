@@ -206,10 +206,10 @@ select{
     background-color: #b0edca;
     border-top: 1px solid #ccc;
     justify-content: space-around;
-    padding: 8px 0;
+    padding: 10px 0;
   }
 
-  .bottom-nav-mobile a {
+  .bottom-nav-mobile div {
     display: flex;
     flex-direction: column;
     color: #333;

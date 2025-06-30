@@ -64,7 +64,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ formData, onChange }) => {
         </div>
 
         {/* 약 종류 */}
-        <div className="flex items-center w-[500px]">
+        <div className="flex items-center w-[300px] md:w-[500px]">
             <label className="font-bold w-24">약 종류</label>
             <div className="flex gap-6 items-center">
             <label className="flex items-center gap-1">

@@ -132,9 +132,9 @@ const Home: React.FC = () => {
     <div className="px-4 w-full">
       <h4 className="font-bold mb-10">오늘의 톡톡!</h4>
       <div className="flex justify-center mb-10 gap-4">
-        <img src={pillIcon} alt="약 캐릭터" className="w-20 sm:w-28 md:w-32 lg:w-40" />
-        <div className="flex flex-col sm:flex-row bg-[#F9E79F] rounded-[50px] px-4 sm:px-6 py-3 sm:py-4 items-center">
-          <div className="flex m-2 sm:m-4 text-sm sm:text-base">
+        <img src={pillIcon} alt="약 캐릭터" className="w-28 md:w-32 lg:w-40" />
+        <div className="flex flex-col sm:flex-row bg-[#F9E79F] rounded-[50px] px-10 py-3 sm:px-6 sm:py-4 items-center">
+          <div className="flex m-1 sm:m-4 text-sm sm:text-base">
             <h3 className="font-bold">{userName || "Home"}</h3>
             <h3>님</h3>
           </div>

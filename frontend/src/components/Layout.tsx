@@ -101,6 +101,7 @@ const NavLinks = ({ onClick, user }: NavLinksProps) => {
     );
 };
 
+
 const Layout = () => {
   // Define types for useState
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -126,8 +127,16 @@ const Layout = () => {
     const navigate = useNavigate();
     const stored = localStorage.getItem("user");
 
+    const handleMobileProtectedClick = (path: string) => {
+    if (!user) {
+        navigate("/login");
+    } else {
+        navigate(path);
+    }
+    };
+
     return (
-    <div className="min-h-screen bg-white flex justify-center px-[calc(100%/12)] ">
+    <div className="min-h-screen bg-white flex justify-center md:px-[calc(100%/12)]">
         {/* 10그리드 중앙 콘텐츠 (양쪽 1그리드 마진) */}
         <div className="md:shadow w-full max-w-screen-lg">
             {/* Top header */}
@@ -167,25 +176,28 @@ const Layout = () => {
                 </aside>
 
                 {/* Main content area */}
-                <div className="w-full max-w-screen-md px-4 main-content-area">
+                <div className="w-full max-w-screen-md px-0 md:px-4 mt-6 md:mt-0 main-content-area">
                     <Outlet />
                 </div>
 
                   {/* Bottom Navigation (Mobile only) */}
-                    <nav className="bottom-nav-mobile">
-                        <div onClick={() => navigate(user ? "/home" : "/base")} className="cursor-pointer">
-                            <Home />
-                        </div>
-                        <Link to="/dashboard">
-                            <Pill />
-                        </Link>
-                        <Link to="/pillsCalendar">
-                            <Calendar />
-                        </Link>
-                        <Link to="/mypage">
-                            <Settings />
-                        </Link>
-                    </nav>
+                <nav className="bottom-nav-mobile flex justify-around items-center bg-green-200 py-3 rounded-t-xl">
+                    <div
+                    onClick={() => navigate(user ? "/home" : "/base")}
+                    className="cursor-pointer"
+                    >
+                    <Home className="w-6 h-6" />
+                    </div>
+                    <div onClick={() => handleMobileProtectedClick("/dashboard")}>
+                        <Pill className="w-6 h-6" />
+                    </div>
+                    <div onClick={() => handleMobileProtectedClick("/pillsCalendar")}>
+                        <Calendar className="w-6 h-6" />
+                    </div>
+                    <div onClick={() => handleMobileProtectedClick("/mypage")}>
+                        <Settings className="w-6 h-6" />
+                    </div>
+                </nav>
             </main>
         </div>
     </div>

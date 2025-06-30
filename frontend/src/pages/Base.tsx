@@ -30,7 +30,7 @@ const Base = () => {
             onClick={() => navigate("/login")}
             className="bg-[#58D68D] text-white font-semibold px-5 py-2 rounded-full hover:bg-[#45c779] transition"
           >
-            로그인 하러가기
+            로그인 하기
           </button>
         </div>
       </div>

@@ -189,7 +189,7 @@ const Mypage = () => {
   }
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="max-w-xl mx-auto px-8 md:px-0">
       <h4 className="font-bold mb-10">마이페이지</h4>
 
       <div className="flex items-center justify-between mb-6">
