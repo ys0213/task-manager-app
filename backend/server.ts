@@ -41,6 +41,7 @@ app.get("/", (req: Request, res: Response): void => {
 });
 
 app.get('/health', (req, res) => {
+  console.log('Health check ping received at', new Date());
   res.status(200).send('OK');
 });
 
