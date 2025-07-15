@@ -64,14 +64,14 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
 };
 
 export const fetchMonthlyUserStats = async () => {
-  const res = await fetch("/api/admin/user-stats/monthly");
+  const res = await fetch(`${API_BASE_URL}/admin/user-stats/monthly`);
   if (!res.ok) throw new Error("Failed to fetch user stats");
 
   return await res.json();
 };
 
 export const fetchActiveUserCount = async () => {
-  const res = await fetch("/api/admin/user-stats/count");
+  const res = await fetch(`${API_BASE_URL}/admin/user-stats/count`);
   if (!res.ok) throw new Error("Failed to fetch user stats");
 
   return await res.json();
@@ -82,7 +82,7 @@ export const updateUser = async (
   updatedUserData: Partial<UserResponse>
 ): Promise<UserResponse | null> => {
   try {
-    const response = await fetch(`/api/admin/userUpdate/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/admin/userUpdate/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  PieLabelRenderProps,
-  Tooltip,
-} from 'recharts';
+import {PieChart,Pie,Cell,ResponsiveContainer,PieLabelRenderProps,Tooltip} from 'recharts';
 import { fetchActiveUserCount } from '../../api/adminApi';
 
 const COLORS = ['#58D68D', '#F9E79F'];

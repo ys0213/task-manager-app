@@ -41,7 +41,7 @@ const AdminBase = () => {
 
   return (
     <div>
-      <h3 className="text-1xl font-bold">This Page is only for administrators.</h3>
+      <h3 className="text-1xl font-bold">약톡 관리자용 adminPage</h3>
       <br />
       <div>
       <Link to="/admin/users">
